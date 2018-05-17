@@ -292,7 +292,7 @@ else % Create the figure
         'Units', 'Normalized',...
         'Position',[r_practice.x r_practice.y r_practice.w r_practice.h],...
         'String','no MRI : keyboard L/D/R arrows',...
-        'TooltipString','wille use LeftArrow and RightArrow',...
+        'TooltipString','will use LeftArrow and RightArrow',...
         'HorizontalAlignment','Center',...
         'Tag',(r_practice.tag),...
         'BackgroundColor',figureBGcolor);
@@ -788,11 +788,12 @@ else % Create the figure
     fprintf('\n')
     fprintf('Response buttuns (fORRP 932) : \n')
     fprintf('USB \n')
-    fprintf('HHSC - 2x4 - ? \n')
+    fprintf('HHSC - 2x4 CYL ? \n')
     fprintf('HID NAR BYGRT \n')
     fprintf('\n')
     fprintf('Keyboard :\n')
-    fprintf('keys = LeftArrow & DownArrow & RightArrow \n')
+    fprintf('keys STOPSIGNAL = LeftArrow &             RightArrow \n')
+    fprintf('keys LIKERT     = LeftArrow & DownArrow & RightArrow \n')
     
     
 end
