@@ -64,9 +64,23 @@ end
 Paradigm(:,4) = {Parameters.StartSSD};
 
 
-jitter_vect_float = Parameters.JitterMin + (Parameters.JitterMax - Parameters.JitterMin) * rand(NrTrials,1);
-jitter_vect_int = round(jitter_vect_float/S.PTB.IFI)*S.PTB.IFI;
-Paradigm(:,3) = num2cell( jitter_vect_int );
+%% Generate Jitter according to a density function
+
+MIN = Parameters.JitterMin;
+MAX = Parameters.JitterMax;
+MEAN = Parameters.JitterMean;
+N = 1e6;
+
+rand_uni =  MIN + (MAX-MIN)*rand(N/2,1); % uniform probability density function
+rand_norm = MEAN + 0.2.*randn(N,1); % normal probability density function
+rand_task = [rand_uni ; rand_norm]; % concatenate the two
+rand_task( rand_task<MIN ) = []; % cut when values are outside
+rand_task( rand_task>MAX ) = []; % cut when values are outside
+rand_task = Shuffle(rand_task); rand_task = Shuffle(rand_task); % doubkle shuffle
+
+jitter_float = rand_task(1:NrTrials); % take only NrTrials jitter values
+jitter_int_frame = round(jitter_float/S.PTB.IFI)*S.PTB.IFI; % round toward the inter-frame-interval
+Paradigm(:,3) = num2cell( jitter_int_frame );
 
 
 %% Define a planning <--- paradigme

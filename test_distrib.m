@@ -6,17 +6,45 @@ MIN = 0.5;
 MAX = 4;
 MEAN = 1;
 
-x = 0:0.001:4;
+N = 1e6;
 
-a = 2;
-b = 5;
+rand_uni =  MIN + (MAX-MIN)*rand(N/2,1);
+% hist(rand_uni,1000)
 
-f = a*b*x.^(a-1).*(1-x.^a).^(b-1) ;
+rand_norm = MEAN + 0.2.*randn(N,1);
+% hist(rand_norm,1000)
+
+rand_task = [rand_uni ; rand_norm];
+
+rand_task( rand_task<MIN ) = [];
+rand_task( rand_task>MAX ) = [];
+rand_task = Shuffle(rand_task); rand_task = Shuffle(rand_task);
+
+subplot(2,1,1)
+hist(rand_task,1000)
+
+n = 128;
+RAND = rand_task(1:n);
+RAND = round(RAND*60)/60;
+subplot(2,1,2)
+hist(RAND,n*2)
+
+mean(rand_task)
+
+
+%%
+
+% x = 0:0.001:4;
+
+% a = 2;
+% b = 5;
+
+% f = a*b*x.^(a-1).*(1-x.^a).^(b-1) ;
 
 % plot(x,f);
 
 % med = (1-2.^(-1/b)).^(1/a)
-mean = a/(a+b);
+% mean = a/(a+b);
 
 
 %%
@@ -47,7 +75,7 @@ mean = a/(a+b);
 
 %%
 
-y = exppdf(x,2);
-
-plot(x,y)
+% y = exppdf(x,2);
+% 
+% plot(x,y)
 
