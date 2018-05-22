@@ -123,7 +123,8 @@ try
                                 end
                                 
                                 if ~has_clicked && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
-                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000})
+                                    side = S.Parameters.Fingers.Names{find(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right]))}; %#ok<FNDSB>
+                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000 side })
                                     RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
                                     has_clicked = 1;
                                     break
@@ -155,7 +156,8 @@ try
                                 end
                                 
                                 if ~has_clicked && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
-                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000})
+                                    side = S.Parameters.Fingers.Names{find(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right]))}; %#ok<FNDSB>
+                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000 side})
                                     RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
                                     has_clicked = 1;
                                     break
@@ -188,7 +190,8 @@ try
                                 end
                                 
                                 if ~has_clicked && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
-                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000})
+                                    side = S.Parameters.Fingers.Names{find(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right]))}; %#ok<FNDSB>
+                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000 side})
                                     RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
                                     has_clicked = 1;
                                     break
@@ -210,6 +213,10 @@ try
                 Screen('DrawingFinished',S.PTB.wPtr);
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr);
                 RR.AddEvent({['Hold__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                
+                if ~has_clicked
+                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) -1 ''})
+                end
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 secs = lastFlipOnset;
@@ -233,9 +240,6 @@ try
                 end
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
-                if ~has_clicked
-                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) -1})
-                end
                 
             otherwise % ---------------------------------------------------
                 

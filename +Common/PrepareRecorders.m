@@ -22,7 +22,7 @@ RR.AddStartTime( 'StartTime' , 0 );
 %% Behaviour recorder
 
 % Create
-BR = EventRecorder( { 'event_name' , 'Go/Stop', 'Left/Right', 'StopSignalDelay (ms)' , 'ReactionTime (ms)' } , EP.EventCount-2 ); % high arbitrary value : preallocation of memory
+BR = EventRecorder( { 'event_name' , 'Go/Stop', 'Left/Right', 'StopSignalDelay (ms)' , 'ReactionTime (ms)' 'Side (Left/Right)'} , EP.EventCount-2 ); % high arbitrary value : preallocation of memory
 
 
 %% Prepare the logger of MRI triggers
