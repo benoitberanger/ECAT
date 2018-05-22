@@ -18,7 +18,7 @@ Parameters.JitterMin     = 0.5; % second
 Parameters.JitterMax     = 4.0; % second
 Parameters.JitterMean    = 1.0; % second
 
-Parameters.StartSSD = 1000; % millisecond
+Parameters.StartSSD = 50; % millisecond
 
 switch S.OperationMode
     

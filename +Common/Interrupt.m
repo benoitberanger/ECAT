@@ -17,7 +17,7 @@ if keyCode(S.Parameters.Keybinds.Stop_Escape_ASCII)
     RR.AddStopTime( 'StopTime', StopTime - StartTime );
     
     ShowCursor;
-    Priority( S.PTB.oldLevel );
+    Priority( 0 );
     
     fprintf( 'ESCAPE key pressed \n')
     
