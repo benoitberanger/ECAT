@@ -54,7 +54,10 @@ try
                 fprintf('#%3d/%.3d %4s %5s %3gms \n', ...
                     EP.Data{evt,4},size(EP.Data,1), EP.Data{evt,5}, EP.Data{evt,6}, EP.Data{evt,8} )
                 
-                has_clicked = 0;
+                button_press = 0;
+                
+                current_ssd = EP.Get('StopSignalDelay',evt);
+                
                 
                 %% Circle
                 
@@ -122,11 +125,11 @@ try
                                     break
                                 end
                                 
-                                if ~has_clicked && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
+                                if ~button_press && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
                                     side = S.Parameters.Fingers.Names{find(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right]))}; %#ok<FNDSB>
-                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000 side })
+                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) current_ssd round((secs-lastFlipOnset)*1000) side })
                                     RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
-                                    has_clicked = 1;
+                                    button_press = 1;
                                     break
                                 end
                                 
@@ -140,7 +143,7 @@ try
                         
                     case 'Stop'
                         
-                        when = lastFlipOnset + EP.Get('StopSignalDelay',evt)/1000 - S.PTB.anticipation;
+                        when = lastFlipOnset + current_ssd/1000 - S.PTB.anticipation;
                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                         secs = lastFlipOnset;
                         while secs < when
@@ -155,11 +158,11 @@ try
                                     break
                                 end
                                 
-                                if ~has_clicked && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
+                                if ~button_press && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
                                     side = S.Parameters.Fingers.Names{find(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right]))}; %#ok<FNDSB>
-                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000 side})
+                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) current_ssd round((secs-lastFlipOnset)*1000) side})
                                     RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
-                                    has_clicked = 1;
+                                    button_press = 1;
                                     break
                                 end
                                 
@@ -189,11 +192,11 @@ try
                                     break
                                 end
                                 
-                                if ~has_clicked && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
+                                if ~button_press && any(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right ]))
                                     side = S.Parameters.Fingers.Names{find(keyCode([S.Parameters.Fingers.Left S.Parameters.Fingers.Right]))}; %#ok<FNDSB>
-                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) (secs-lastFlipOnset)*1000 side})
+                                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) current_ssd round((secs-lastFlipOnset)*1000) side})
                                     RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
-                                    has_clicked = 1;
+                                    button_press = 1;
                                     break
                                 end
                                 
@@ -214,8 +217,15 @@ try
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr);
                 RR.AddEvent({['Hold__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
                 
-                if ~has_clicked
-                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) EP.Get('StopSignalDelay',evt) -1 ''})
+                if ~button_press
+                    BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) current_ssd -1 ''})
+                    if strcmp(EP.Get('Go/Stop',evt),'Stop')
+                        STOPSIGNAL.AdjustSSD( EP, evt, 'up' )
+                    end
+                else
+                    if strcmp(EP.Get('Go/Stop',evt),'Stop')
+                        STOPSIGNAL.AdjustSSD( EP, evt, 'down' )
+                    end
                 end
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

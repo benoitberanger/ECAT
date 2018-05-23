@@ -10,46 +10,55 @@ end
 
 %% Paradigme
 
-clc
-
 Parameters.PreparePeriod = 0.5; % second
 Parameters.HoldPeriod    = 1.0; % second
 Parameters.JitterMin     = 0.5; % second
 Parameters.JitterMax     = 4.0; % second
 Parameters.JitterMean    = 1.0; % second
 
-Parameters.StartSSD = 50; % millisecond
+Parameters.StartStaircases = [100 150 200 250]; % millisecond
+% Parameters.StartStaircases = Shuffle(Parameters.StartStaircases);
 
 switch S.OperationMode
     
     case 'Acquisition'
         Parameters.NrGo   = 96;
         Parameters.NrStop = 32;
-        chunck = 4;
     case 'FastDebug'
         Parameters.NrGo   = 3;
         Parameters.NrStop = 1;
-        chunck = [];
     case 'RealisticDebug'
         Parameters.NrGo   = 24;
         Parameters.NrStop = 8;
-        chunck = 4;
 end
+
+assert( mod(Parameters.NrGo, Parameters.NrStop) == 0 )
 
 NrTrials = Parameters.NrGo + Parameters.NrStop;
 
-SequenceGoStop = Common.Randomize01( Parameters.NrGo, Parameters.NrStop, chunck);
-SequenceLR = Common.Randomize01( NrTrials/2, NrTrials/2, chunck);
+SequenceGoStop = Common.ShuffleN( [ zeros(1,Parameters.NrGo/Parameters.NrStop) 1 ], NrTrials/(Parameters.NrGo/Parameters.NrStop +1) );
+SequenceLR     = Common.ShuffleN( [0 1]                                           , NrTrials/2 );
 
-Paradigm = cell(NrTrials,4);
+Paradigm = cell(NrTrials,5);
+
+Staircase_idx = 1:length(Parameters.StartStaircases);
+SequenceStaircaise =  Common.ShuffleN( Staircase_idx , NrTrials/length(Staircase_idx) );
+
+counter_staircase = 0;
 
 for e = 1 : NrTrials
     
     switch SequenceGoStop(e)
         case 0
             Paradigm{e,1} = 'Go';
+            Paradigm{e,5} = 0;
         case 1
             Paradigm{e,1} = 'Stop';
+            counter_staircase = counter_staircase + 1;
+            Paradigm{e,5} = SequenceStaircaise(counter_staircase);
+            if counter_staircase <= length(Staircase_idx)
+                Paradigm{e,4} = Parameters.StartStaircases(SequenceStaircaise(counter_staircase));
+            end
     end
     
     switch SequenceLR(e)
@@ -60,8 +69,6 @@ for e = 1 : NrTrials
     end
     
 end
-
-Paradigm(:,4) = {Parameters.StartSSD};
 
 
 %% Generate Jitter according to a density function
@@ -74,9 +81,9 @@ N = 1e6;
 rand_uni =  MIN + (MAX-MIN)*rand(N/2,1); % uniform probability density function
 rand_norm = MEAN + 0.2.*randn(N,1); % normal probability density function
 rand_task = [rand_uni ; rand_norm]; % concatenate the two
-rand_task( rand_task<MIN ) = []; % cut when values are outside
-rand_task( rand_task>MAX ) = []; % cut when values are outside
-rand_task = Shuffle(rand_task); rand_task = Shuffle(rand_task); % doubkle shuffle
+rand_task( rand_task<MIN ) = []; % cut when values outside the bounds
+rand_task( rand_task>MAX ) = []; % cut when values outside the bounds
+rand_task = Shuffle(rand_task); rand_task = Shuffle(rand_task); % double shuffle (only one needed)
 
 jitter_float = rand_task(1:NrTrials); % take only NrTrials jitter values
 jitter_int_frame = round(jitter_float/S.PTB.IFI)*S.PTB.IFI; % round toward the inter-frame-interval
@@ -87,7 +94,7 @@ Paradigm(:,3) = num2cell( jitter_int_frame );
 
 
 % Create and prepare
-header = { 'event_name', 'onset(s)', 'duration(s)', 'Trial#', 'Go/Stop', 'Left/Right', 'jitter (s)', 'StopSignalDelay (ms)'};
+header = { 'event_name', 'onset(s)', 'duration(s)', 'Trial#', 'Go/Stop', 'Left/Right', 'jitter (s)', 'StopSignalDelay (ms)', 'Staircase idx'};
 EP     = EventPlanning(header);
 
 % NextOnset = PreviousOnset + PreviousDuration
@@ -104,7 +111,7 @@ EP.AddStartTime('StartTime',0);
 for evt = 1 : NrTrials
     
     dur = Parameters.PreparePeriod + Parameters.HoldPeriod + Paradigm{evt,3};
-    EP.AddPlanning({ [Paradigm{evt,1} '_' Paradigm{evt,2}] NextOnset(EP) dur evt Paradigm{evt,1} Paradigm{evt,2} Paradigm{evt,3} Paradigm{evt,4}});
+    EP.AddPlanning({ [Paradigm{evt,1} '_' Paradigm{evt,2}] NextOnset(EP) dur evt Paradigm{evt,1} Paradigm{evt,2} Paradigm{evt,3} Paradigm{evt,4} Paradigm{evt,5}});
     
 end
 
