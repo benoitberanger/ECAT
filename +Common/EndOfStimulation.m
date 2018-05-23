@@ -59,8 +59,12 @@ assignin('base','TaskData',TaskData)
 
 %% Close all audio devices
 
-% Close the audio device
-PsychPortAudio('Close');
+if strcmp(S.Task,'STOPSIGNAL')
+    
+    % Close the audio device
+    PsychPortAudio('Close');
+    
+end
 
 
 %% Close parallel port
