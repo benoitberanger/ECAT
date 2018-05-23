@@ -1,4 +1,4 @@
-function AdjustSSD( EP, evt, adjust )
+function AdjustSSD( EP, evt, adjust, stepsize )
 
 col_sc  = EP.Get('Staircase');
 col_ssd = EP.Get('StopSignalDelay');
@@ -17,7 +17,7 @@ switch adjust
 end
 
 if ~isempty(next)
-    EP.Data{next+1,col_ssd} = EP.Data{evt,col_ssd} + sgn*50; % 50 ms
+    EP.Data{next+1,col_ssd} = EP.Data{evt,col_ssd} + sgn*stepsize; % milliseconds
 end
 
 end % function

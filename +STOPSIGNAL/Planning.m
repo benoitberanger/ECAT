@@ -17,7 +17,8 @@ Parameters.JitterMax     = 4.0; % second
 Parameters.JitterMean    = 1.0; % second
 
 Parameters.StartStaircases = [100 150 200 250]; % millisecond
-% Parameters.StartStaircases = Shuffle(Parameters.StartStaircases);
+
+Parameters.StepSize        = 50; % millisecond
 
 switch S.OperationMode
     

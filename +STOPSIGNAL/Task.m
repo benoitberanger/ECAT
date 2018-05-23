@@ -220,11 +220,11 @@ try
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) current_ssd -1 ''})
                     if strcmp(EP.Get('Go/Stop',evt),'Stop')
-                        STOPSIGNAL.AdjustSSD( EP, evt, 'up' )
+                        STOPSIGNAL.AdjustSSD( EP, evt, 'up', Parameters.StepSize )
                     end
                 else
                     if strcmp(EP.Get('Go/Stop',evt),'Stop')
-                        STOPSIGNAL.AdjustSSD( EP, evt, 'down' )
+                        STOPSIGNAL.AdjustSSD( EP, evt, 'down', Parameters.StepSize )
                     end
                 end
                 
@@ -263,14 +263,6 @@ try
         end
         
     end % for
-    
-    %     % "The end"
-    %     Circle.Draw
-    %     Cross.Draw
-    %     STOPSIGNAL.UpdateCursor(Cursor, EP.Get('Deviation',evt))
-    %     Screen('DrawingFinished',S.PTB.wPtr);
-    %     lastFlipOnset = Screen('Flip',S.PTB.wPtr);
-    %     SR.AddSample([lastFlipOnset-StartTime Cursor.X Cursor.Y Cursor.R Cursor.Theta])
     
     
     %% End of stimulation
