@@ -84,9 +84,15 @@ Parameters.STOPSIGNAL.Circle.ValueColor     = [0 0 0];                          
 % copy somes parameters from Circle
 
 % Bip => @
-Parameters.STOPSIGNAL.Bip.Freq  = 900;            % Hz
-Parameters.STOPSIGNAL.Bip.BipDuration = 0.500;    % second
-Parameters.STOPSIGNAL.Bip.InOutFadeRation = 0.05; % ration : [0-1]
+Parameters.STOPSIGNAL.Bip.Freq            = 900;   % Hz
+Parameters.STOPSIGNAL.Bip.BipDuration     = 0.500; % second
+Parameters.STOPSIGNAL.Bip.InOutFadeRation = 0.05;  % ration : [0-1]
+
+
+%%%%%%%%%%
+% LIKERT %
+%%%%%%%%%%
+
 
 
 
