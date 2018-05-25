@@ -13,20 +13,22 @@ switch S.OperationMode
     
     case 'Acquisition'
         Parameters.NrPics           = 216;
-        Parameters.PicturesDuration = 2;
+        Parameters.PictureDuration  = 2;
         Parameters.LikertDuration   = 2;
-        Parameters.BlankPeriod      = 0.5;
         Parameters.PreparePeriod    = 0.5;
+        Parameters.BlankPeriod      = 0.5;
     case 'FastDebug'
-        Parameters.NrPics           = 9;
-        Parameters.PicturesDuration = 2;
-        Parameters.LikertDuration   = 2;
+        Parameters.NrPics           = 3;
+        Parameters.PictureDuration  = 0.5;
+        Parameters.LikertDuration   = 1;
+        Parameters.PreparePeriod    = 0.5;
+        Parameters.BlankPeriod      = 0.5;
     case 'RealisticDebug'
         Parameters.NrPics           = 3;
-        Parameters.PicturesDuration = 0.5;
+        Parameters.PictureDuration  = 2;
         Parameters.LikertDuration   = 2;
-        Parameters.BlankPeriod      = 0.5;
         Parameters.PreparePeriod    = 0.5;
+        Parameters.BlankPeriod      = 0.5;
 end
 
 NrTrials = Parameters.NrPics;
@@ -52,7 +54,7 @@ EP.AddStartTime('StartTime',0);
 
 for evt = 1 : NrTrials
     
-    dur = Parameters.PicturesDuration + Parameters.LikertDuration + Parameters.BlankPeriod + Parameters.PreparePeriod;
+    dur = Parameters.PictureDuration + Parameters.LikertDuration + Parameters.BlankPeriod + Parameters.PreparePeriod;
     EP.AddPlanning({ 'pic' NextOnset(EP) dur });
     
 end

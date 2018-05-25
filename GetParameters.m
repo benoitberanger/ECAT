@@ -64,10 +64,6 @@ Parameters.Text.ClickCorlor = [0   255 0  ]; % [R G B] ( from 0 to 255 )
 % STOPSIGNAL %
 %%%%%%%%%%%%%%
 
-% % Fixation cross
-% Parameters.STOPSIGNAL.FixationCross.ScreenRatio    = 0.10;          % ratio : dim   = ScreenWide *ratio_screen
-% Parameters.STOPSIGNAL.FixationCross.lineWidthRatio = 0.05;          % ratio : width = dim        *ratio_width
-% Parameters.STOPSIGNAL.FixationCross.Color          = [128 128 128]; % [R G B] ( from 0 to 255 )
 
 % Parameters.STOPSIGNAL.Question.Content       = 'Est-ce vous ?';
 % Parameters.STOPSIGNAL.Question.PositonXRatio = 0.5;  % Xpos = PositonXRatio * ScreenWidth
@@ -93,7 +89,10 @@ Parameters.STOPSIGNAL.Bip.InOutFadeRation = 0.05;  % ration : [0-1]
 % LIKERT %
 %%%%%%%%%%
 
-
+% Fixation cross
+Parameters.LIKERT.FixationCross.ScreenRatio    = 0.10;          % ratio : dim   = ScreenWide *ratio_screen
+Parameters.LIKERT.FixationCross.lineWidthRatio = 0.05;          % ratio : width = dim        *ratio_width
+Parameters.LIKERT.FixationCross.Color          = [255 255 255]; % [R G B] ( from 0 to 255 )
 
 
 %%%%%%%%%%%%%%

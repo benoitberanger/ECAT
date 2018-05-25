@@ -1,9 +1,9 @@
 function [ cross ] = Cross
 global S
 
-dim   = round(S.PTB.wRect(4)*S.Parameters.STOPSIGNAL.Cross.ScreenRatio);
-width = round(dim * S.Parameters.STOPSIGNAL.Cross.lineWidthRatio);
-color = S.Parameters.STOPSIGNAL.Cross.Color;
+dim   = round(S.PTB.wRect(4)*S.Parameters.LIKERT.FixationCross.ScreenRatio);
+width = round(dim * S.Parameters.LIKERT.FixationCross.lineWidthRatio);
+color = S.Parameters.LIKERT.FixationCross.Color;
 
 cross = FixationCross(...
     dim   ,...                       % dimension in pixels
