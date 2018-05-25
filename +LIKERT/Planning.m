@@ -38,7 +38,7 @@ NrTrials = Parameters.NrPics;
 
 
 % Create and prepare
-header = { 'event_name', 'onset(s)', 'duration(s)' };
+header = { 'event_name', 'onset(s)', 'duration(s)', 'Trial#' };
 EP     = EventPlanning(header);
 
 % NextOnset = PreviousOnset + PreviousDuration
@@ -55,7 +55,7 @@ EP.AddStartTime('StartTime',0);
 for evt = 1 : NrTrials
     
     dur = Parameters.PictureDuration + Parameters.LikertDuration + Parameters.BlankPeriod + Parameters.PreparePeriod;
-    EP.AddPlanning({ 'pic' NextOnset(EP) dur });
+    EP.AddPlanning({ 'pic' NextOnset(EP) dur evt });
     
 end
 

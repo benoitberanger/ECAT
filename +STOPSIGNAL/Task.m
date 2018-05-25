@@ -42,6 +42,11 @@ try
             
             case 'StartTime' % --------------------------------------------
                 
+                Circle.Draw
+                
+                Screen('DrawingFinished',S.PTB.wPtr);
+                Screen('Flip',S.PTB.wPtr);
+                
                 StartTime = Common.StartTimeEvent;
                 
             case 'StopTime' % ---------------------------------------------
