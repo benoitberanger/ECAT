@@ -19,6 +19,7 @@ try
     %% Prepare objects
     
     Cross = LIKERT.Prepare.Cross;
+    Scale = LIKERT.Prepare.Scale;
     
     
     %% Eyelink

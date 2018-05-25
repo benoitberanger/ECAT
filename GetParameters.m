@@ -94,6 +94,12 @@ Parameters.LIKERT.FixationCross.ScreenRatio    = 0.10;          % ratio : dim   
 Parameters.LIKERT.FixationCross.lineWidthRatio = 0.05;          % ratio : width = dim        *ratio_width
 Parameters.LIKERT.FixationCross.Color          = [255 255 255]; % [R G B] ( from 0 to 255 )
 
+% Likert scale
+Parameters.LIKERT.Scale.ScreenRatio = 0.80;                              % ratio : dim = ScreenWide *ratio_screen
+Parameters.LIKERT.Scale.Values      = {'0' '1' '2' '3' '4' '5' '6' '7'};
+Parameters.LIKERT.Scale.ScaleColor  = [255 255 255];                     % [R G B] ( from 0 to 255 )
+Parameters.LIKERT.Scale.CursorColor = [255 0   0  ];                     % [R G B] ( from 0 to 255 )
+Parameters.LIKERT.Scale.Voffcet     = 0.40;                              % Ypos = (1-Voffcet)*ScreenHight
 
 %%%%%%%%%%%%%%
 %  Keybinds  %
