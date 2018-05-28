@@ -15,6 +15,11 @@ classdef Scale < baseObject
         
         % Internal variables
         
+        scaleRect  = zeros(0,4) % [x1 y1 x2 y2]
+        tickRect   = zeros(4,0) % [x1 y1 x2 y2 ; x1 y1 x2 y2 ; .... ; x1 y1 x2 y2]'
+        cursorRect = zeros(0,4) % [x1 y1 x2 y2]
+        
+        lineThickness = 3; % pixels
         
     end % properties
     
@@ -26,8 +31,8 @@ classdef Scale < baseObject
         % -----------------------------------------------------------------
         %                           Constructor
         % -----------------------------------------------------------------
-        function obj = Scale( width , values , scalecolor , cursorcolor , center )
-            % obj = Scale( width=5 (pixels) ,  color=[128 128 128 255] from 0 to 255 , center = [ CenterX CenterY ] (pixels), values = cellstr )
+        function self = Scale( width , values , scalecolor , cursorcolor , center )
+            % self = Scale( width=5 (pixels) ,  color=[128 128 128 255] from 0 to 255 , center = [ CenterX CenterY ] (pixels), values = cellstr )
             
             % ================ Check input argument =======================
             
@@ -54,15 +59,17 @@ classdef Scale < baseObject
                 assert( iscellstr(values) , ...
                     'values = {''smt'' ''other'' } (cellstr)' )
                 
-                obj.width       = width;
-                obj.scalecolor  = scalecolor;
-                obj.cursorcolor = cursorcolor;
-                obj.center      = center;
-                obj.values      = values;
+                self.width       = width;
+                self.scalecolor  = scalecolor;
+                self.cursorcolor = cursorcolor;
+                self.center      = center;
+                self.values      = values;
                 
                 % ================== Callback =============================
                 
-%                 obj.GenerateCoords
+                self.GenerateScaleRect  % real position
+                self.GenerateTickRect   % real position
+                self.GenerateCursorRect % main rect, but not at the right position
                 
             else
                 % Create empty instance
