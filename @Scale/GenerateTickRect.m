@@ -1,6 +1,4 @@
 function GenerateTickRect( self )
-%%
-self.tickRect = 0;
 
 x_start = self.scaleRect(1);
 x_end   = self.scaleRect(3);

@@ -18,6 +18,8 @@ scale = Scale(...
 
 scale.LinkToWindowPtr( S.PTB.wPtr )
 
+scale.GenerateLabelRect
+
 scale.AssertReady % just to check
 
 end % function

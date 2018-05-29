@@ -18,7 +18,9 @@ classdef Scale < baseObject
         scaleRect  = zeros(0,4) % [x1 y1 x2 y2]
         tickRect   = zeros(4,0) % [x1 y1 x2 y2 ; x1 y1 x2 y2 ; .... ; x1 y1 x2 y2]'
         cursorRect = zeros(0,4) % [x1 y1 x2 y2]
-        
+        labelX     = zeros(0,1);
+        labelY     = zeros(0,1);
+
         lineThickness = 3; % pixels
         
     end % properties
