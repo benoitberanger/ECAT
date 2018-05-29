@@ -17,11 +17,19 @@ classdef Scale < baseObject
         
         scaleRect  = zeros(0,4) % [x1 y1 x2 y2]
         tickRect   = zeros(4,0) % [x1 y1 x2 y2 ; x1 y1 x2 y2 ; .... ; x1 y1 x2 y2]'
-        cursorRect = zeros(0,4) % [x1 y1 x2 y2]
-        labelX     = zeros(0,1);
-        labelY     = zeros(0,1);
-
+        
+        labelX     = zeros(0,1)
+        labelY     = zeros(0,1)
+        
         lineThickness = 3; % pixels
+        
+        cursor_pos_px     = zeros(0,1)
+        cursor_pos_value  = zeros(0,1)
+        cursorBaseRect    = zeros(0,4) % [x1 y1 x2 y2]
+        cursorCurrentRect = zeros(0,4) % [x1 y1 x2 y2]
+        
+        p2v = zeros(0,1) % polynome to polyval : pixel -> value
+        v2p = zeros(0,1) % polynome to polyval : value -> pixel
         
     end % properties
     

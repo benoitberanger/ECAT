@@ -3,6 +3,6 @@ function Draw( self )
 self.DrawScale
 self.DrawTick
 self.DrawLabel
-% self.DrawCursor
+self.DrawCursor
 
 end % function

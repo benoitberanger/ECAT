@@ -153,11 +153,59 @@ try
                 
                 %% Likert
                 
-                Screen('FillOval', S.PTB.wPtr, rand(1,3)*255, CenterRectOnPoint([0 0 500 500],S.PTB.CenterH,S.PTB.CenterV));
+                Scale.Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
                 RR.AddEvent({['Likert__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                
+                Scale.cursor_pos_value = rand + ( str2double(Scale.values{1}) + str2double(Scale.values{end}) ) / 2;
+                Scale.cursor_pos_px    = Scale.value2px( Scale.cursor_pos_value );
+                Scale.UpdateCursor(0);
+                
+                
+                when = StartTime + EP.Data{evt+1,2} - S.PTB.slack;
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                secs = lastFlipOnset;
+                while secs < when
+                    
+                    % Fetch keys
+                    [keyIsDown, ~, keyCode] = KbCheck;
+                    
+                    if keyIsDown
+                        
+                        % ~~~ ESCAPE key ? ~~~
+                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                        if EXIT
+                            break
+                        end
+                        
+                        dpx = 0;
+                        
+                        if keyCode( S.Parameters.Fingers.Left )
+                            dpx = dpx - 1;
+                        end
+                        
+                        if keyCode( S.Parameters.Fingers.Right )
+                            dpx = dpx + 1;
+                        end
+                        
+                        Scale.UpdateCursor( dpx )
+                        
+                    end
+                    
+                    Scale.Draw
+                    
+                    Screen('DrawingFinished',S.PTB.wPtr);
+                    secs = Screen('Flip',S.PTB.wPtr);
+                    
+                    
+                end % while
+                if EXIT
+                    break
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
                 
                 
             otherwise % ---------------------------------------------------
