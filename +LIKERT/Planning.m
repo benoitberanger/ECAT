@@ -20,7 +20,7 @@ switch S.OperationMode
     case 'FastDebug'
         Parameters.NrPics           = 3;
         Parameters.PictureDuration  = 0.5;
-        Parameters.LikertDuration   = 1;
+        Parameters.LikertDuration   = 20;
         Parameters.PreparePeriod    = 0.5;
         Parameters.BlankPeriod      = 0.5;
     case 'RealisticDebug'

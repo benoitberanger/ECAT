@@ -31,6 +31,7 @@ try
     
     % Initialize some variables
     EXIT = 0;
+    dpx_lim = Scale.width/20;
     
     % Loop over the EventPlanning
     for evt = 1 : size( EP.Data , 1 )
@@ -164,6 +165,7 @@ try
                 Scale.UpdateCursor(0);
                 
                 
+                dpx = 0;
                 when = StartTime + EP.Data{evt+1,2} - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 secs = lastFlipOnset;
@@ -180,17 +182,21 @@ try
                             break
                         end
                         
-                        dpx = 0;
-                        
                         if keyCode( S.Parameters.Fingers.Left )
                             dpx = dpx - 1;
+                            dpx = max( dpx , -dpx_lim );
                         end
                         
                         if keyCode( S.Parameters.Fingers.Right )
                             dpx = dpx + 1;
+                            dpx = min( dpx , +dpx_lim );
                         end
                         
                         Scale.UpdateCursor( dpx )
+                        
+                    else
+                        
+                        dpx = 0;
                         
                     end
                     
