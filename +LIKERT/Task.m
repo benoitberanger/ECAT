@@ -56,8 +56,8 @@ try
             case {'pic'} % --------------------------------
                 
                 % Echo in the command window
-                fprintf('#%3d/%.3d \n', ...
-                    EP.Data{evt,4},size(EP.Data,1) )
+                fprintf('#%3d/%.3d %s ', ...
+                    EP.Data{evt,4}, size(EP.Data,1) , EP.Data{evt,1} )
                 
                 
                 %% Fixation cross
@@ -198,6 +198,7 @@ try
                             BR.AddEvent({EP.Data{evt,1} round((secs-lastFlipOnset)*1000) Scale.cursor_pos_value})
                             RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
                             button_press = 1;
+                            fprintf(' %4.dms %1.1f \n', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                             break
                         end
                         
@@ -230,6 +231,7 @@ try
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
+                    fprintf(' %4.dms %1.1f \n', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                 end
                 
                 when = StartTime + EP.Data{evt+1,2} - S.PTB.slack;
