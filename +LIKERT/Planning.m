@@ -10,25 +10,27 @@ end
 %% Paradigme
 
 switch S.OperationMode
-    
     case 'Acquisition'
         Parameters.NrPics           = 216;
-        Parameters.PictureDuration  = 2;
-        Parameters.LikertDuration   = 2;
         Parameters.PreparePeriod    = 0.5;
         Parameters.BlankPeriod      = 0.5;
+        Parameters.PictureDuration  = [4 6];
+        Parameters.LikertDuration   = 5;
+        Parameters.FixationCross    = 20;
     case 'FastDebug'
         Parameters.NrPics           = 6;
-        Parameters.PictureDuration  = 0.5;
-        Parameters.LikertDuration   = 2;
         Parameters.PreparePeriod    = 0.5;
         Parameters.BlankPeriod      = 0.5;
+        Parameters.PictureDuration  = [0.5 1];
+        Parameters.LikertDuration   = 3;
+        Parameters.FixationCross    = 3;
     case 'RealisticDebug'
-        Parameters.NrPics           = 6;
-        Parameters.PictureDuration  = 2;
-        Parameters.LikertDuration   = 2;
+        Parameters.NrPics           = 12;
         Parameters.PreparePeriod    = 0.5;
         Parameters.BlankPeriod      = 0.5;
+        Parameters.PictureDuration  = [4 6];
+        Parameters.LikertDuration   = 5;
+        Parameters.FixationCross    = 20;
 end
 
 NrTrials = Parameters.NrPics;
@@ -38,7 +40,7 @@ NrTrials = Parameters.NrPics;
 
 
 % Create and prepare
-header = { 'event_name', 'onset(s)', 'duration(s)', 'Trial#' };
+header = { 'event_name', 'onset(s)', 'duration(s)', 'Trial#', 'Picture duration(s)'};
 EP     = EventPlanning(header);
 
 % NextOnset = PreviousOnset + PreviousDuration
@@ -51,11 +53,21 @@ EP.AddStartTime('StartTime',0);
 
 % --- Stim ----------------------------------------------------------------
 
+EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
 
 for evt = 1 : NrTrials
     
-    dur = Parameters.PictureDuration + Parameters.LikertDuration + Parameters.BlankPeriod + Parameters.PreparePeriod;
-    EP.AddPlanning({ 'pic' NextOnset(EP) dur evt });
+    if mod(evt,NrTrials/3) == 0
+        
+        EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
+        
+    else
+        
+        pic_dur = (Parameters.PictureDuration(2) - Parameters.PictureDuration(1))*rand + Parameters.PictureDuration(1);
+        dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2;
+        EP.AddPlanning({ 'pic' NextOnset(EP) dur evt pic_dur});
+        
+    end
     
 end
 

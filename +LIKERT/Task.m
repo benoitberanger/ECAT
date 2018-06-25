@@ -20,6 +20,7 @@ try
     
     Cross = LIKERT.Prepare.Cross;
     Scale = LIKERT.Prepare.Scale;
+    [ Text_1 , Text_2 ] =  LIKERT.Prepare.Text;
     
     
     %% Eyelink
@@ -53,6 +54,40 @@ try
                 
                 [ ER, RR, StopTime ] = Common.StopTimeEvent( EP, ER, RR, StartTime, evt );
                 
+            case 'FixationCross'
+                
+                fprintf( 'Cross : %ds \n' , Parameters.FixationCross )
+                
+                Cross.Draw
+                Screen('DrawingFinished',S.PTB.wPtr);
+                lastFlipOnset = Screen('Flip',S.PTB.wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
+                
+                ER.AddEvent({EP.Data{evt,1} lastFlipOnset-StartTime []});
+                RR.AddEvent({['FixationCross__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                
+                when = lastFlipOnset + Parameters.FixationCross - S.PTB.slack;
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                secs = lastFlipOnset;
+                while secs < when
+                    
+                    % Fetch keys
+                    [keyIsDown, secs, keyCode] = KbCheck;
+                    
+                    if keyIsDown
+                        % ~~~ ESCAPE key ? ~~~
+                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                        if EXIT
+                            break
+                        end
+                    end
+                    
+                end % while
+                if EXIT
+                    break
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                
             case {'pic'} % --------------------------------
                 
                 % Echo in the command window
@@ -60,14 +95,14 @@ try
                     EP.Data{evt,4}, size(EP.Data,1) , EP.Data{evt,1} )
                 
                 
-                %% Fixation cross
+                %% Preparation cross
                 
                 Cross.Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
                 ER.AddEvent({EP.Data{evt,1} lastFlipOnset-StartTime []});
-                RR.AddEvent({['FixationCross__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                RR.AddEvent({['PreparationCross__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
                 
                 when = lastFlipOnset + Parameters.PreparePeriod - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,7 +164,7 @@ try
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
                 RR.AddEvent({['Picture__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
                 
-                when = lastFlipOnset + Parameters.PictureDuration - S.PTB.slack;
+                when = lastFlipOnset + EP.Get( 'Picture', evt ) - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 secs = lastFlipOnset;
                 while secs < when
@@ -152,23 +187,27 @@ try
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
-                %% Likert
+                %% Likert 1 : J'aime
                 
                 % Pick a random value around the half of the scale
-                Scale.cursor_pos_value = rand + ( str2double(Scale.values{1}) + str2double(Scale.values{end}) ) / 2;
+                Scale.cursor_pos_value = (4-3)*rand + 3 ; % values must be in [3 - 4]
+                if abs( Scale.cursor_pos_value - 3.5 ) < 0.1
+                    Scale.cursor_pos_value = Scale.cursor_pos_value + sign(rand-0.5)*0.2;
+                end
                 Scale.cursor_pos_px    = Scale.value2px( Scale.cursor_pos_value );
                 Scale.UpdateCursor(0);
                 
                 Scale.Draw
+                Text_1.Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Likert__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                RR.AddEvent({['Likert__1__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
                 
                 button_press = 0;
                 dpx = 0;
                 % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
-                when = StartTime + EP.Data{evt+1,2} -S.PTB.IFI --S.PTB.slack ;
+                when = lastFlipOnset + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
                 secs = lastFlipOnset;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 while secs < when
@@ -198,7 +237,7 @@ try
                             BR.AddEvent({EP.Data{evt,1} round((secs-lastFlipOnset)*1000) Scale.cursor_pos_value})
                             RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
                             button_press = 1;
-                            fprintf(' %4.dms %1.1f \n', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
+                            fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                             break
                         end
                         
@@ -211,6 +250,91 @@ try
                     end
                     
                     Scale.Draw
+                    Text_1.Draw
+                    
+                    Screen('DrawingFinished',S.PTB.wPtr);
+                    secs = Screen('Flip',S.PTB.wPtr);
+                    
+                    
+                end % while
+                if EXIT
+                    break
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                Screen('DrawingFinished',S.PTB.wPtr);
+                Screen('Flip',S.PTB.wPtr);
+                
+                if ~button_press
+                    BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
+                    fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
+                end
+                
+                
+                %% Likert 2 : Je désire
+                
+                % Pick a random value around the half of the scale
+                Scale.cursor_pos_value = (4-3)*rand + 3 ; % values must be in [3 - 4]
+                if abs( Scale.cursor_pos_value - 3.5 ) < 0.1
+                    Scale.cursor_pos_value = Scale.cursor_pos_value + sign(rand-0.5)*0.2;
+                end
+                Scale.cursor_pos_px = Scale.value2px( Scale.cursor_pos_value );
+                Scale.UpdateCursor(0);
+                
+                Scale.Draw
+                Text_2.Draw
+                
+                Screen('DrawingFinished',S.PTB.wPtr);
+                lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
+                RR.AddEvent({['Likert__1__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                
+                button_press = 0;
+                dpx = 0;
+                % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
+                when = StartTime + EP.Data{evt+1,2} -S.PTB.IFI -S.PTB.slack ;
+                secs = lastFlipOnset;
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                while secs < when
+                    
+                    % Fetch keys
+                    [keyIsDown, ~, keyCode] = KbCheck;
+                    
+                    if keyIsDown
+                        
+                        % ~~~ ESCAPE key ? ~~~
+                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                        if EXIT
+                            break
+                        end
+                        
+                        if keyCode( S.Parameters.Fingers.Left )
+                            dpx = dpx - 1;
+                            dpx = max( dpx , -dpx_lim );
+                        end
+                        
+                        if keyCode( S.Parameters.Fingers.Right )
+                            dpx = dpx + 1;
+                            dpx = min( dpx , +dpx_lim );
+                        end
+                        
+                        if keyCode( S.Parameters.Fingers.Validate )
+                            BR.AddEvent({EP.Data{evt,1} round((secs-lastFlipOnset)*1000) Scale.cursor_pos_value})
+                            RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
+                            button_press = 1;
+                            fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
+                            break
+                        end
+                        
+                        Scale.UpdateCursor( dpx )
+                        
+                    else
+                        
+                        dpx = 0;
+                        
+                    end
+                    
+                    Scale.Draw
+                    Text_2.Draw
                     
                     Screen('DrawingFinished',S.PTB.wPtr);
                     secs = Screen('Flip',S.PTB.wPtr);
@@ -231,7 +355,7 @@ try
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
-                    fprintf(' %4.dms %1.1f \n', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
+                    fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                 end
                 
                 when = StartTime + EP.Data{evt+1,2} - S.PTB.slack;
@@ -255,6 +379,9 @@ try
                     break
                 end
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                
+                fprintf('\n')
                 
                 
             otherwise % ---------------------------------------------------
