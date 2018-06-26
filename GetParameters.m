@@ -134,7 +134,7 @@ switch S.Task
         
         Parameters.Fingers.Names = {'Left' 'Right'};
         
-    case 'LIKERT'
+    case {'LIKERT' 'TryLikertScale' }
         
         switch S.Environement
             

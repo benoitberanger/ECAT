@@ -28,6 +28,8 @@ switch S.Task
         BR = EventRecorder( { 'event_name' , 'Go/Stop', 'Left/Right', 'StopSignalDelay (ms)' , 'ReactionTime (ms)' 'Side (Left/Right)'} , EP.EventCount-2 ); % high arbitrary value : preallocation of memory
     case 'LIKERT'
         BR = EventRecorder( { 'event_name' , 'ReactionTime (ms)' , 'Likert_value [0-7]' } , Parameters.NrPics*2 ); % 2 scales par pics
+    case 'TryLikertScale'
+        BR = EventRecorder( { 'event_name' , 'ReactionTime (ms)' , 'Likert_value [0-7]' } , Parameters.NrTrials );
 end
 
 
@@ -40,7 +42,7 @@ switch S.Task
         KL = KbLogger( ...
             [ struct2array(S.Parameters.Keybinds) S.Parameters.Fingers.Left S.Parameters.Fingers.Right ] ,...
             [ KbName(struct2array(S.Parameters.Keybinds)) S.Parameters.Fingers.Names ] );
-    case 'LIKERT'
+    case {'LIKERT' , 'TryLikertScale' }
         KL = KbLogger( ...
             [ struct2array(S.Parameters.Keybinds) S.Parameters.Fingers.Left S.Parameters.Fingers.Validate S.Parameters.Fingers.Right ] ,...
             [ KbName(struct2array(S.Parameters.Keybinds)) S.Parameters.Fingers.Names ] );

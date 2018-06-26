@@ -39,6 +39,9 @@ switch get(hObject,'Tag')
     case 'pushbutton_STOPSIGNAL'
         Task = 'STOPSIGNAL';
         
+    case 'pushbutton_TryLikertScale'
+        Task = 'TryLikertScale';
+        
     case 'pushbutton_LIKERT'
         Task = 'LIKERT';
         
@@ -236,6 +239,8 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
                 task = 'S';
             case 'LIKERT'
                 task = 'L';
+            case 'TryLikertScale'
+                task = 'T';
             otherwise
                 error('ECAT:Task','Task ?')
         end
@@ -306,6 +311,9 @@ switch Task
     
     case 'STOPSIGNAL'
         TaskData = STOPSIGNAL.Task;
+        
+    case 'TryLikertScale'
+        TaskData = TryLikertScale.Task;
         
     case 'LIKERT'
         TaskData = LIKERT.Task;
@@ -389,6 +397,8 @@ set(handles.text_LastFileName         , 'String' , DataFile(length(DataPath)+1:e
 if strcmp(Task,'STOPSIGNAL')
     disp(S.TaskData.BR.Data)
 elseif strcmp(Task,'LIKERT')
+    disp(S.TaskData.BR.Data)
+elseif strcmp(Task,'TryLikertScale')
     disp(S.TaskData.BR.Data)
 end
 

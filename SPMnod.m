@@ -16,13 +16,18 @@ try
                 ''
                 };
             
+        case 'TryLikertScale'
+            names = {
+                ''
+                };
+            
         case 'LIKERT'
             names = {
                 ''
                 };
             
         case 'EyelinkCalibration'
-            names = {};
+            names = {''};
             
     end
     
