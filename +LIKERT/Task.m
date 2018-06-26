@@ -13,7 +13,7 @@ try
     
     %% Prepare event record and keybind logger
     
-    [ ER, RR, KL, BR ] = Common.PrepareRecorders( EP );
+    [ ER, RR, KL, BR ] = Common.PrepareRecorders( EP, Parameters );
     
     
     %% Prepare objects
@@ -262,13 +262,38 @@ try
                 end
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
+                
+                %% Hold__1
+                
                 Screen('DrawingFinished',S.PTB.wPtr);
-                Screen('Flip',S.PTB.wPtr);
+                secs = Screen('Flip',S.PTB.wPtr);
+                RR.AddEvent({['Hold__1__' EP.Data{evt,1}] secs-StartTime [] []})
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
                     fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                 end
+                
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                while secs < when
+                    
+                    % Fetch keys
+                    [keyIsDown, secs, keyCode] = KbCheck;
+                    if keyIsDown
+                        
+                        % ~~~ ESCAPE key ? ~~~
+                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                        if EXIT
+                            break
+                        end
+                        
+                    end
+                    
+                end % while
+                if EXIT
+                    break
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
                 %% Likert 2 : Je désire
@@ -286,7 +311,7 @@ try
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
                 lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Likert__1__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                RR.AddEvent({['Likert__2__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
                 
                 button_press = 0;
                 dpx = 0;
@@ -347,11 +372,11 @@ try
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
-                %% Hold
+                %% Hold__2
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
                 secs = Screen('Flip',S.PTB.wPtr);
-                RR.AddEvent({['Hold__' EP.Data{evt,1}] secs-StartTime [] []})
+                RR.AddEvent({['Hold__2__' EP.Data{evt,1}] secs-StartTime [] []})
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})

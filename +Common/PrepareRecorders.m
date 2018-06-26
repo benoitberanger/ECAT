@@ -1,4 +1,4 @@
-function [ ER, RR, KL, BR] = PrepareRecorders( EP )
+function [ ER, RR, KL, BR] = PrepareRecorders( EP, Parameters )
 global S
 
 %% Prepare event record
@@ -27,7 +27,7 @@ switch S.Task
     case 'STOPSIGNAL'
         BR = EventRecorder( { 'event_name' , 'Go/Stop', 'Left/Right', 'StopSignalDelay (ms)' , 'ReactionTime (ms)' 'Side (Left/Right)'} , EP.EventCount-2 ); % high arbitrary value : preallocation of memory
     case 'LIKERT'
-        BR = EventRecorder( { 'event_name' , 'ReactionTime (ms)' , 'Likert_value [0-7]' } , EP.EventCount-2 ); % high arbitrary value : preallocation of memory
+        BR = EventRecorder( { 'event_name' , 'ReactionTime (ms)' , 'Likert_value [0-7]' } , Parameters.NrPics*2 ); % 2 scales par pics
 end
 
 

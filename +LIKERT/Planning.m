@@ -58,16 +58,12 @@ EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
 for evt = 1 : NrTrials
     
     if mod(evt,NrTrials/3) == 0
-        
         EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
-        
-    else
-        
-        pic_dur = (Parameters.PictureDuration(2) - Parameters.PictureDuration(1))*rand + Parameters.PictureDuration(1);
-        dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2;
-        EP.AddPlanning({ 'pic' NextOnset(EP) dur evt pic_dur});
-        
     end
+    
+    pic_dur = (Parameters.PictureDuration(2) - Parameters.PictureDuration(1))*rand + Parameters.PictureDuration(1);
+    dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2;
+    EP.AddPlanning({ 'pic' NextOnset(EP) dur evt pic_dur});
     
 end
 

@@ -792,8 +792,8 @@ else % Create the figure
     fprintf('HID NAR BYGRT \n')
     fprintf('\n')
     fprintf('Keyboard :\n')
-    fprintf('keys STOPSIGNAL = LeftArrow &             RightArrow \n')
-    fprintf('keys LIKERT     = LeftArrow & DownArrow & RightArrow \n')
+    fprintf('keys STOPSIGNAL = LeftArrow &              RightArrow \n')
+    fprintf('keys LIKERT     = LeftArrow &  Validate  & RightArrow \n')
     
     
 end
