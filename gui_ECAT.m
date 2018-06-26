@@ -597,44 +597,21 @@ else % Create the figure
         'Position',[p_tk.x p_tk.y p_tk.w p_tk.h],...
         'BackgroundColor',figureBGcolor);
     
-    p_tk.nbO    = 2; % Number of objects
-    p_tk.Ow     = 1/(p_tk.nbO + 1); % Object width
-    p_tk.countO = 0; % Object counter
-    p_tk.xposO  = @(countO) p_tk.Ow/(p_tk.nbO+1)*countO + (countO-1)*p_tk.Ow;
-    
     buttun_y = 0.05;
     buttun_h = 0.60;
     
     buttun_y_check = buttun_y + buttun_h;
     buttun_h_check = 1-buttun_y-buttun_h;
     
-%     % ---------------------------------------------------------------------
-%     % Pushbutton : Check DetectCEIL
-%     
-%     p_tk.countO  = p_tk.countO + 1;
-%     b_check_dceil.x   = p_tk.xposO(p_tk.countO);
-%     b_check_dceil.y   = buttun_y_check;
-%     b_check_dceil.w   = p_tk.Ow;
-%     b_check_dceil.h   = buttun_h_check;
-%     b_check_dceil.tag = 'pushbutton_Check_DetectCEIL';
-%     handles.(b_check_dceil.tag) = uicontrol(handles.uipanel_Task,...
-%         'Style','pushbutton',...
-%         'Units', 'Normalized',...
-%         'Position',[b_check_dceil.x b_check_dceil.y b_check_dceil.w b_check_dceil.h],...
-%         'String','Check dCEIL',...
-%         'BackgroundColor',buttonBGcolor,...
-%         'Tag',b_check_dceil.tag,...
-%         'Callback',@CheckImages,...
-%         'Tooltip','Check if all dirs and image files are present for this SubjectID');
-    
+    p_tk = Object_Xpos_Xwidth_dispacher([ 3 2 3 ],p_tk);
     
     % ---------------------------------------------------------------------
     % Pushbutton : STOPSIGNAL
     
-    p_tk.countO  = p_tk.countO + 1;
-    b_stopsignal.x   = p_tk.xposO(p_tk.countO);
+    p_tk.count  = p_tk.count + 1;
+    b_stopsignal.x   = p_tk.xpos(p_tk.count);
     b_stopsignal.y   = buttun_y;
-    b_stopsignal.w   = p_tk.Ow;
+    b_stopsignal.w   = p_tk.xwidth(p_tk.count);
     b_stopsignal.h   = buttun_h;
     b_stopsignal.tag = 'pushbutton_STOPSIGNAL';
     handles.(b_stopsignal.tag) = uicontrol(handles.uipanel_Task,...
@@ -649,12 +626,32 @@ else % Create the figure
     
     
     % ---------------------------------------------------------------------
+    % Pushbutton : Try LIKERT scale
+    
+    p_tk.count  = p_tk.count + 1;
+    b_stopsignal.x   = p_tk.xpos(p_tk.count);
+    b_stopsignal.y   = buttun_y;
+    b_stopsignal.w   = p_tk.xwidth(p_tk.count);
+    b_stopsignal.h   = buttun_h;
+    b_stopsignal.tag = 'pushbutton_TryLikertScale';
+    handles.(b_stopsignal.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_stopsignal.x b_stopsignal.y b_stopsignal.w b_stopsignal.h],...
+        'String','Try LIKERT scale',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_stopsignal.tag,...
+        'Callback',@main_ECAT,...
+        'Tooltip','Rry LIKERT scale');
+    
+    
+    % ---------------------------------------------------------------------
     % Pushbutton : Check images
     
-    p_tk.countO  = p_tk.countO + 1;
-    b_check_img.x   = p_tk.xposO(p_tk.countO);
+    p_tk.count  = p_tk.count + 1;
+    b_check_img.x   = p_tk.xpos(p_tk.count);
     b_check_img.y   = buttun_y_check;
-    b_check_img.w   = p_tk.Ow;
+    b_check_img.w   = p_tk.xwidth(p_tk.count);
     b_check_img.h   = buttun_h_check;
     b_check_img.tag = 'pushbutton_CheckImages';
     handles.(b_check_img.tag) = uicontrol(handles.uipanel_Task,...
@@ -671,9 +668,9 @@ else % Create the figure
     % ---------------------------------------------------------------------
     % Pushbutton : LIKERT
     
-    b_aceil.x   = p_tk.xposO(p_tk.countO);
+    b_aceil.x   = p_tk.xpos(p_tk.count);
     b_aceil.y   = buttun_y;
-    b_aceil.w   = p_tk.Ow;
+    b_aceil.w   = p_tk.xwidth(p_tk.count);
     b_aceil.h   = buttun_h;
     b_aceil.tag = 'pushbutton_LIKERT';
     handles.(b_aceil.tag) = uicontrol(handles.uipanel_Task,...
@@ -843,5 +840,22 @@ switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
         set(handles.pushbutton_ForceShutDown     ,'Visible','on')
         set(handles.pushbutton_Initialize        ,'Visible','on')
 end
+
+end % function
+
+% -------------------------------------------------------------------------
+function obj = Object_Xpos_Xwidth_dispacher( vect , obj )
+
+obj.vect  = vect; % relative proportions of each panel, from left to right
+
+obj.vectLength    = length(obj.vect);
+obj.vectTotal     = sum(obj.vect);
+obj.adjustedTotal = obj.vectTotal + 1;
+obj.unitWidth     = 1/obj.adjustedTotal;
+obj.interWidth    = obj.unitWidth/obj.vectLength;
+
+obj.count  = 0;
+obj.xpos   = @(count) obj.unitWidth*sum(obj.vect(1:(count-1))) + 0.8*count*obj.interWidth;
+obj.xwidth = @(count) obj.vect(count)*obj.unitWidth;
 
 end % function
