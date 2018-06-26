@@ -12,13 +12,17 @@ end
 switch S.OperationMode
     case 'Acquisition'
         Parameters.NrPics           = 216;
-        Parameters.PreparePeriod    = 0.5;
-        Parameters.BlankPeriod      = 0.5;
-        Parameters.PictureDuration  = [4 6];
-        Parameters.LikertDuration   = 5;
-        Parameters.FixationCross    = 20;
+        Parameters.LimitPicsGroup   = 36; % every Parameters.LimitPicsGroup a FixationCross block will be added
+        
+        Parameters.PreparePeriod    = 0.5; % second
+        Parameters.BlankPeriod      = 0.5; % second
+        Parameters.PictureDuration  = [4 6]; % [min max] for jitter, second
+        Parameters.LikertDuration   = 5;   % second
+        Parameters.FixationCross    = 20;  % second
     case 'FastDebug'
         Parameters.NrPics           = 6;
+        Parameters.LimitPicsGroup   = 3;
+        
         Parameters.PreparePeriod    = 0.5;
         Parameters.BlankPeriod      = 0.5;
         Parameters.PictureDuration  = [0.5 1];
@@ -26,6 +30,8 @@ switch S.OperationMode
         Parameters.FixationCross    = 3;
     case 'RealisticDebug'
         Parameters.NrPics           = 12;
+        Parameters.LimitPicsGroup   = 6;
+        
         Parameters.PreparePeriod    = 0.5;
         Parameters.BlankPeriod      = 0.5;
         Parameters.PictureDuration  = [4 6];
@@ -57,13 +63,13 @@ EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
 
 for evt = 1 : NrTrials
     
-    if mod(evt,NrTrials/3) == 0
-        EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
-    end
-    
     pic_dur = (Parameters.PictureDuration(2) - Parameters.PictureDuration(1))*rand + Parameters.PictureDuration(1);
     dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2;
     EP.AddPlanning({ 'pic' NextOnset(EP) dur evt pic_dur});
+    
+    if mod(evt,Parameters.LimitPicsGroup) == 0
+        EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
+    end
     
 end
 
