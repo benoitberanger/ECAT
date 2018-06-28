@@ -1,8 +1,8 @@
-function Plot( self )
+function PlotDark( self )
 
 f = figure('Name',self.filename,'NumberTitle','off');
 ax = axes(f);
-image(ax, self.GetX('NoMask'))
+image(ax, self.GetX('DarkMask'))
 % colormap(ax, gray(256))
 set(ax, 'XAxisLocation', 'top')
 axis(ax, 'equal')

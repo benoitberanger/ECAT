@@ -205,6 +205,22 @@ end
 S.Side = Side;
 
 
+%% GUI : Mask images
+
+switch get(get(handles.uipanel_Mask,'SelectedObject'),'Tag')
+    case 'radiobutton_NoMask'
+        Mask = 'NoMask';
+    case 'radiobutton_ShuffleMask'
+        Mask = 'ShuffleMask';
+    case 'radiobutton_DarkMask'
+        Mask = 'DarkMask';
+    otherwise
+        warning('ECAT:Mask','Error in Mask selection')
+end
+
+S.Mask = Mask;
+
+
 %% GUI : Check if Eyelink toolbox is available
 
 switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')

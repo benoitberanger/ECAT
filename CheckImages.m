@@ -1,100 +1,37 @@
-function  [ out ] = CheckImages( SubjectID , Task )
-%CHECKIMAGES will check if the architecture of dir + images name is correct
+function  [ list ] = CheckImages
+%CHECKIMAGES will check if images name is correct
 
 % if nargin < 2
 % end
 
-out = struct;
-p   = GetParameters;
+list = ListImages;
 
+img_dir = fullfile(fileparts(pwd),'img');
 
-%% Check dirs : Part 1
+img_dir_content = dir(img_dir);
+img_dir_content = img_dir_content(3:end); % remove "." & ".."
 
-% Echo
-fprintf('\n')
-fprintf('Checking %s dirs & images \n' , SubjectID )
+filename = {img_dir_content.name}';
 
-% ../img
-if isdir( fullfile('..','img') )
-    fprintf('../img CHECKED \n')
-else
-    error  ('../img ERROR : dir must exists')
-end
-
-% SubjectID
-if isdir( fullfile('..','img',SubjectID) )
-    fprintf('../img/%s CHECKED \n', SubjectID )
-else
-    error  ('../img/%s ERROR : dir must exists', SubjectID )
-end
-
-% Task
-if isdir( fullfile('..','img',SubjectID,Task) )
-    fprintf('../img/%s/%s CHECKED \n', SubjectID , Task )
-else
-    error  ('../img/%s/%s ERROR : dir must exists', SubjectID , Task )
-end
-
-
-
-%% Load Task parameters
-
-Categories = p.(Task).Images.Categories;
-Values     = p.(Task).Images.Values;
-
-nrCategories = size(Categories,1);
-nrValues     = length(Values);
-
-% Save them
-out.Categories = Categories;
-out.Values     = Values;
-
-
-%% Check dirs : Part 2
-
-for c = 1 : nrCategories
+for l = 1 : length(list)
     
-    nameCat = [Categories{c,1} 'VS' Categories{c,2} Categories{c,3}];
+    res = regexp(filename,['^' list{l} '\..*']);
+    idx = find(~cellfun(@isempty,res));
     
-    % Category
-    if isdir( fullfile('..','img',SubjectID,Task,nameCat) )
-        fprintf('../img/%s/%s/%s CHECKED \n', SubjectID , Task , nameCat )
+    if isempty(idx)
+        name = '???';
+        fprintf('%s ---> %s \n',list{l},name)
     else
-        error  ('../img/%s/%s/%s ERROR : dir must exists', SubjectID , Task , nameCat )
+        for n = 1:numel(idx)
+            name = filename{idx(n)};
+            fprintf('%s ---> %s',list{l},name)
+            if n > 1
+                fprintf(' !!!!! doublon !!!!!')
+            end
+            fprintf('\n')
+        end
     end
-    
-    out.nameCategory{c} = nameCat;
-    
 end
-
-
-%% Check content of dirs
-
-for c = 1 : nrCategories
-    
-    nameCat = [Categories{c,1} 'VS' Categories{c,2} Categories{c,3}];
-    dirpath = fullfile('..','img',SubjectID,Task,nameCat);
-    
-    categ_dir_content = dir(dirpath);
-    categ_dir_content = categ_dir_content(3:end); % remove "." and ".."
-    
-    cate_filename = cellstr(char(categ_dir_content.name));
-    
-    for v = 1 : nrValues
-        
-        pattern = [SubjectID '_' nameCat '_' Values{v}];
-        result  = strfind( cate_filename , pattern );
-        isfound = any(~cellfun(@isempty, result));
-        
-        assert( isfound , 'The pattern %s was not found in %s' , pattern , dirpath )
-        
-        % Save file path
-        out.(nameCat){v} = fullfile(categ_dir_content(v).folder, categ_dir_content(v).name);
-        fprintf('%s CHECKED \n',out.(nameCat){v})
-        
-    end % value
-    
-end % category
 
 
 end % function

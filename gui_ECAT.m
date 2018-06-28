@@ -56,7 +56,7 @@ else % Create the figure
     panelProp.wP    = 1 - panelProp.xposP * 2;
     
     panelProp.vect  = ...
-        [1 2 2 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
+        [1 2 1 2 1 1 1 2 ]; % relative proportions of each panel, from bottom to top
     
     panelProp.vectLength    = length(panelProp.vect);
     panelProp.vectTotal     = sum(panelProp.vect);
@@ -361,10 +361,10 @@ else % Create the figure
     
     %% Panel : Eyelink mode
     
-    el_shift = 0.30;
+    el_shift = 0.25;
     
-    p_el.x = panelProp.xposP + el_shift;
-    p_el.w = panelProp.wP - el_shift ;
+    p_el.x = panelProp.xposP/2 + el_shift;
+    p_el.w = panelProp.wP - el_shift + panelProp.xposP/2;
     
     panelProp.countP = panelProp.countP - 1;
     p_el.y = panelProp.yposP(panelProp.countP);
@@ -382,7 +382,7 @@ else % Create the figure
     % Checkbox : Windowed screen
     
     c_ws.x = panelProp.xposP;
-    c_ws.w = el_shift - panelProp.xposP;
+    c_ws.w = el_shift - panelProp.xposP/2;
     
     c_ws.y = panelProp.yposP(panelProp.countP)-0.01 ;
     c_ws.h = p_el.h * 0.3;
@@ -506,7 +506,7 @@ else % Create the figure
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    p_el_dw.nbO    = 3; % Number of objects
+    p_el_dw.nbO    = 4.5; % Number of objects
     p_el_dw.Ow     = 1/(p_el_dw.nbO + 1); % Object width
     p_el_dw.countO = 0; % Object counter
     p_el_dw.xposO  = @(countO) p_el_dw.Ow/(p_el_dw.nbO+1)*countO + (countO-1)*p_el_dw.Ow;
@@ -563,7 +563,26 @@ else % Create the figure
         'String','Calibration',...
         'BackgroundColor',buttonBGcolor,...
         'Tag',b_cal.tag,...
-        'Callback',@main_ECAT);
+        'Callback',@pushbutton_EyelinkCalibration_Callback);
+    
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Download EL files according to the SubjectID
+    
+    p_el_dw.countO = p_el_dw.countO + 1;
+    b_cal.x   = p_el_dw.xposO(p_el_dw.countO);
+    b_cal.y   = p_el_dw.y ;
+    b_cal.w   = p_el_dw.Ow*1.5;
+    b_cal.h   = p_el_dw.h;
+    b_cal.tag = 'pushbutton_DownloadELfiles';
+    handles.(b_cal.tag) = uicontrol(handles.uipanel_EyelinkMode,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_cal.x b_cal.y b_cal.w b_cal.h],...
+        'String','Download files',...
+        'BackgroundColor',buttonBGcolor*0.9,...
+        'Tag',b_cal.tag,...
+        'Callback',@pushbutton_DownloadELfiles_Callback);
     
     
     % ---------------------------------------------------------------------
@@ -571,7 +590,7 @@ else % Create the figure
     
     b_fsd.x = c_pp.x + c_pp.h;
     b_fsd.y = p_el_up.y ;
-    b_fsd.w = p_el_dw.Ow*1.25;
+    b_fsd.w = p_el_dw.Ow*1.50;
     b_fsd.h = p_el_dw.h;
     handles.pushbutton_ForceShutDown = uicontrol(handles.uipanel_EyelinkMode,...
         'Style','pushbutton',...
@@ -580,6 +599,87 @@ else % Create the figure
         'String','ForceShutDown',...
         'BackgroundColor',buttonBGcolor,...
         'Callback','Eyelink.ForceShutDown');
+    
+    
+    %% Panel : Image masking
+    
+    p_mask.x = panelProp.xposP;
+    p_mask.w = panelProp.wP;
+    
+    panelProp.countP = panelProp.countP - 1;
+    p_mask.y = panelProp.yposP(panelProp.countP);
+    p_mask.h = panelProp.unitWidth*panelProp.vect(panelProp.countP);
+    
+    handles.uipanel_Mask = uibuttongroup(handles.(mfilename),...
+        'Title','Mask images',...
+        'Units', 'Normalized',...
+        'Position',[p_mask.x p_mask.y p_mask.w p_mask.h],...
+        'BackgroundColor',figureBGcolor);
+    
+    p_mask.nbO    = 3; % Number of objects
+    p_mask.Ow     = 1/(p_mask.nbO + 1); % Object width
+    p_mask.countO = 0; % Object counter
+    p_mask.xposO  = @(countO) p_mask.Ow/(p_mask.nbO+1)*countO + (countO-1)*p_mask.Ow;
+    
+    
+    % ---------------------------------------------------------------------
+    % RadioButton : No masking
+    
+    p_mask.countO = p_mask.countO + 1;
+    r_left.x   = p_mask.xposO(p_mask.countO);
+    r_left.y   = 0.1 ;
+    r_left.w   = p_mask.Ow;
+    r_left.h   = 0.8;
+    r_left.tag = 'radiobutton_NoMask';
+    handles.(r_left.tag) = uicontrol(handles.uipanel_Mask,...
+        'Style','radiobutton',...
+        'Units', 'Normalized',...
+        'Position',[r_left.x r_left.y r_left.w r_left.h],...
+        'String','No masking',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_left.tag,...
+        'BackgroundColor',figureBGcolor,...
+        'Tooltip','Real images');
+    
+    
+    % ---------------------------------------------------------------------
+    % RadioButton : Shuffle pixels
+    
+    p_mask.countO = p_mask.countO + 1;
+    r_left.x   = p_mask.xposO(p_mask.countO);
+    r_left.y   = 0.1 ;
+    r_left.w   = p_mask.Ow;
+    r_left.h   = 0.8;
+    r_left.tag = 'radiobutton_ShuffleMask';
+    handles.(r_left.tag) = uicontrol(handles.uipanel_Mask,...
+        'Style','radiobutton',...
+        'Units', 'Normalized',...
+        'Position',[r_left.x r_left.y r_left.w r_left.h],...
+        'String','Shuffle pixels',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_left.tag,...
+        'BackgroundColor',figureBGcolor,...
+        'Tooltip','Shuffle pixels');
+    
+    
+    % ---------------------------------------------------------------------
+    % RadioButton : Dark images
+    
+    p_mask.countO = p_mask.countO + 1;
+    r_left.x   = p_mask.xposO(p_mask.countO);
+    r_left.y   = 0.1 ;
+    r_left.w   = p_mask.Ow;
+    r_left.h   = 0.8;
+    r_left.tag = 'radiobutton_DarkMask';
+    handles.(r_left.tag) = uicontrol(handles.uipanel_Mask,...
+        'Style','radiobutton',...
+        'Units', 'Normalized',...
+        'Position',[r_left.x r_left.y r_left.w r_left.h],...
+        'String','Dark images',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_left.tag,...
+        'BackgroundColor',figureBGcolor,...
+        'Tooltip','Divide pixel intensity by 10');
     
     
     %% Panel : Task
@@ -842,6 +942,43 @@ switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
 end
 
 end % function
+
+
+% -------------------------------------------------------------------------
+function pushbutton_EyelinkCalibration_Callback(hObject, ~)
+handles = guidata(hObject);
+
+% Screen mode selection
+AvalableDisplays = get(handles.listbox_Screens,'String');
+SelectedDisplay = get(handles.listbox_Screens,'Value');
+wPtr = str2double( AvalableDisplays(SelectedDisplay) );
+
+Eyelink.OpenCalibration(wPtr);
+
+end % function
+
+
+% -------------------------------------------------------------------------
+function pushbutton_DownloadELfiles_Callback(hObject, ~)
+handles = guidata(hObject);
+
+SubjectID = get(handles.edit_SubjectID,'String');
+if isempty(SubjectID)
+    warning('SubjectID:Empty','SubjectID is empty')
+    return
+end
+
+DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
+el_file = [DataPath 'eyelink_files_to_download.txt'];
+
+if ~exist(el_file,'file')
+    error('File does not exists : %s', el_file)
+end
+
+Eyelink.downloadELfiles(DataPath)
+
+end % function
+
 
 % -------------------------------------------------------------------------
 function obj = Object_Xpos_Xwidth_dispacher( vect , obj )

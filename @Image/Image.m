@@ -10,6 +10,7 @@ classdef Image < baseObject
         filename  % path of the image
         scale = 1 % scaling factor of the image => 1 means original image
         center    % [X-center-PTB, Y-center-PTB] in pixels, PTB coordinates
+        mask = '' % mask of the images : str = 'NoMask', 'ShuffleMask', 'DarkMask'
         
         % Internal variables
         
@@ -32,7 +33,7 @@ classdef Image < baseObject
         % -----------------------------------------------------------------
         %                           Constructor
         % -----------------------------------------------------------------
-        function self = Image( filename, center, scale )
+        function self = Image( filename, center, scale, mask )
             % self = Image( path = '../img/[subjectID]/test.png', center = [ CenterX CenterY ] (pixels), scale = 1  )
             
             % ================ Check input argument =======================
@@ -55,6 +56,11 @@ classdef Image < baseObject
                 % --- scale ----
                 if nargin > 2 && ~isempty(scale)
                     self.Rescale(scale);
+                end
+                
+                % --- mask ----
+                if nargin > 3 && ~isempty(mask)
+                    self.mask = mask;
                 end
                 
             else
