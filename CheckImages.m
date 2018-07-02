@@ -1,8 +1,9 @@
-function  [ list ] = CheckImages
+function  [ list ] = CheckImages( print )
 %CHECKIMAGES will check if images name is correct
 
-% if nargin < 2
-% end
+if nargin < 1
+    print = 0;
+end
 
 list = ListImages;
 
@@ -24,11 +25,12 @@ for l = 1 : length(list)
     else
         for n = 1:numel(idx)
             name = filename{idx(n)};
-            fprintf('%s ---> %s',list{l},name)
+            if print, fprintf('%s ---> %s',list{l},name), end
             if n > 1
                 error(' !!!!! doublon !!!!!')
             end
-            fprintf('\n')
+            if print, fprintf('\n'), end
+            list{l,2} = name;
         end
     end
 end
