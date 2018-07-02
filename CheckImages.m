@@ -20,13 +20,13 @@ for l = 1 : length(list)
     
     if isempty(idx)
         name = '???';
-        fprintf('%s ---> %s \n',list{l},name)
+        error('%s ---> %s \n',list{l},name)
     else
         for n = 1:numel(idx)
             name = filename{idx(n)};
             fprintf('%s ---> %s',list{l},name)
             if n > 1
-                fprintf(' !!!!! doublon !!!!!')
+                error(' !!!!! doublon !!!!!')
             end
             fprintf('\n')
         end
