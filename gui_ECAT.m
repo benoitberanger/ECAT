@@ -703,7 +703,7 @@ else % Create the figure
     buttun_y_check = buttun_y + buttun_h;
     buttun_h_check = 1-buttun_y-buttun_h;
     
-    p_tk = Object_Xpos_Xwidth_dispacher([ 3 2 3 ],p_tk);
+    p_tk = Object_Xpos_Xwidth_dispacher([ 1 1 1 1 ],p_tk);
     
     % ---------------------------------------------------------------------
     % Pushbutton : STOPSIGNAL
@@ -726,26 +726,6 @@ else % Create the figure
     
     
     % ---------------------------------------------------------------------
-    % Pushbutton : Try LIKERT scale
-    
-    p_tk.count  = p_tk.count + 1;
-    b_stopsignal.x   = p_tk.xpos(p_tk.count);
-    b_stopsignal.y   = buttun_y;
-    b_stopsignal.w   = p_tk.xwidth(p_tk.count);
-    b_stopsignal.h   = buttun_h;
-    b_stopsignal.tag = 'pushbutton_TryLikertScale';
-    handles.(b_stopsignal.tag) = uicontrol(handles.uipanel_Task,...
-        'Style','pushbutton',...
-        'Units', 'Normalized',...
-        'Position',[b_stopsignal.x b_stopsignal.y b_stopsignal.w b_stopsignal.h],...
-        'String','Try LIKERT scale',...
-        'BackgroundColor',buttonBGcolor,...
-        'Tag',b_stopsignal.tag,...
-        'Callback',@main_ECAT,...
-        'Tooltip','Rry LIKERT scale');
-    
-    
-    % ---------------------------------------------------------------------
     % Pushbutton : Check images
     
     p_tk.count  = p_tk.count + 1;
@@ -761,13 +741,72 @@ else % Create the figure
         'String','Check images',...
         'BackgroundColor',buttonBGcolor,...
         'Tag',b_check_img.tag,...
-        'Callback',@CheckImages,...
-        'Tooltip','Check if all dirs and image files are present and coherent.');
+        'Callback',@pushbutton_CheckImages_Callback,...
+        'Tooltip','Check if all dirs and image files are present and coherent. Also check the categories');
+    
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Try LIKERT scale
+    
+    b_try.x   = p_tk.xpos(p_tk.count);
+    b_try.y   = buttun_y;
+    b_try.w   = p_tk.xwidth(p_tk.count);
+    b_try.h   = buttun_h;
+    b_try.tag = 'pushbutton_TryLikertScale';
+    handles.(b_try.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_try.x b_try.y b_try.w b_try.h],...
+        'String','Try LIKERT scale',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_try.tag,...
+        'Callback',@main_ECAT,...
+        'Tooltip','Rry LIKERT scale');
+    
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Split images for the 2 runs
+    
+    p_tk.count  = p_tk.count + 1;
+    b_split.x   = p_tk.xpos(p_tk.count);
+    b_split.y   = buttun_y_check;
+    b_split.w   = p_tk.xwidth(p_tk.count);
+    b_split.h   = buttun_h_check;
+    b_split.tag = 'pushbutton_Split';
+    handles.(b_split.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_split.x b_split.y b_split.w b_split.h],...
+        'String','Split',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_split.tag,...
+        'Callback',@pushbutton_Split_Callback,...
+        'Tooltip','Split in 2 subset the images for this SubjectID : 1 for Run1, 1 for Run2');
+    
+    
+    % ---------------------------------------------------------------------
+    % Pushbutton : Check split
+    
+    b_checksplit.x   = p_tk.xpos(p_tk.count);
+    b_checksplit.y   = buttun_y;
+    b_checksplit.w   = p_tk.xwidth(p_tk.count);
+    b_checksplit.h   = buttun_h;
+    b_checksplit.tag = 'pushbutton_CheckSplit';
+    handles.(b_checksplit.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','pushbutton',...
+        'Units', 'Normalized',...
+        'Position',[b_checksplit.x b_checksplit.y b_checksplit.w b_checksplit.h],...
+        'String','Check split',...
+        'BackgroundColor',buttonBGcolor,...
+        'Tag',b_checksplit.tag,...
+        'Callback',@pushbutton_CheckSplit_Callback,...
+        'Tooltip','Check if  image list has been splited in 2 parts for this Subhject ID');
     
     
     % ---------------------------------------------------------------------
     % Pushbutton : LIKERT
     
+    p_tk.count  = p_tk.count + 1;
     b_aceil.x   = p_tk.xpos(p_tk.count);
     b_aceil.y   = buttun_y;
     b_aceil.w   = p_tk.xwidth(p_tk.count);
@@ -782,6 +821,44 @@ else % Create the figure
         'Tag',b_aceil.tag,...
         'Callback',@main_ECAT,...
         'Tooltip','To be continued...');
+    
+    
+    % ---------------------------------------------------------------------
+    % Radiobutton : Run 1
+    
+    r_Run1.x   = p_tk.xpos(p_tk.count);
+    r_Run1.y   = buttun_y_check;
+    r_Run1.w   = p_tk.xwidth(p_tk.count)/2;
+    r_Run1.h   = buttun_h_check;
+    r_Run1.tag = 'radiobutton_Run1';
+    handles.(r_Run1.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','radio',...
+        'Units', 'Normalized',...
+        'Position',[r_Run1.x r_Run1.y r_Run1.w r_Run1.h],...
+        'String','1',...
+        'TooltipString','pictures for run 1 ',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_Run1.tag,...
+        'BackgroundColor',figureBGcolor);
+    
+    
+    % ---------------------------------------------------------------------
+    % Radiobutton : Run 2
+    
+    r_Run2.x   = p_tk.xpos(p_tk.count) + p_tk.xwidth(p_tk.count)/2;
+    r_Run2.y   = buttun_y_check;
+    r_Run2.w   = p_tk.xwidth(p_tk.count)/2;
+    r_Run2.h   = buttun_h_check;
+    r_Run2.tag = 'radiobutton_Run2';
+    handles.(r_Run2.tag) = uicontrol(handles.uipanel_Task,...
+        'Style','radio',...
+        'Units', 'Normalized',...
+        'Position',[r_Run2.x r_Run2.y r_Run2.w r_Run2.h],...
+        'String','2',...
+        'TooltipString','pictures for run 2',...
+        'HorizontalAlignment','Center',...
+        'Tag',r_Run2.tag,...
+        'BackgroundColor',figureBGcolor);
     
     
     %% Panel : Operation mode
@@ -962,11 +1039,7 @@ end % function
 function pushbutton_DownloadELfiles_Callback(hObject, ~)
 handles = guidata(hObject);
 
-SubjectID = get(handles.edit_SubjectID,'String');
-if isempty(SubjectID)
-    warning('SubjectID:Empty','SubjectID is empty')
-    return
-end
+SubjectID = fetch_SubjectID(handles);
 
 DataPath = [fileparts(pwd) filesep 'data' filesep SubjectID filesep];
 el_file = [DataPath 'eyelink_files_to_download.txt'];
@@ -996,3 +1069,83 @@ obj.xpos   = @(count) obj.unitWidth*sum(obj.vect(1:(count-1))) + 0.8*count*obj.i
 obj.xwidth = @(count) obj.vect(count)*obj.unitWidth;
 
 end % function
+
+
+% -------------------------------------------------------------------------
+function pushbutton_CheckImages_Callback(~,~)
+
+[ list ] = CheckImages;
+assert(~isempty(list), 'pb with CheckImages')
+
+[ out ]  = ListCategory;
+assert(~isempty(out), 'pb with ListCategory')
+
+cprintf('Comments','List of images & category : checked \n')
+
+end
+
+
+% -------------------------------------------------------------------------
+function pushbutton_Split_Callback(hObject, ~)
+handles = guidata(hObject);
+
+SubjectID = fetch_SubjectID(handles);
+DataPath  = fullfile( fileparts(pwd), 'data', SubjectID);
+Run1_file = fullfile(DataPath,'Run1_pictures.mat');
+Run2_file = fullfile(DataPath,'Run2_pictures.mat');
+
+if exist(Run1_file,'file')==2
+    warning('%s already exists', Run1_file)
+    fprintf('Randomization has already be done. \n')
+    fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
+    return
+end
+if exist(Run2_file,'file')==2
+    warning('%s already exists', Run2_file)
+    fprintf('Randomization has already be done. \n')
+    fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
+    return
+end
+
+fprintf('Splitted list of files does not exist for : %s \n', DataPath)
+
+[ Run1 , Run2 ] = SplitImages(); %#ok<ASGLU>
+
+save(Run1_file, 'Run1')
+fprintf('Saved : %s \n', Run1_file)
+
+save(Run2_file, 'Run2')
+fprintf('Saved : %s \n', Run2_file)
+
+end
+
+
+% -------------------------------------------------------------------------
+function pushbutton_CheckSplit_Callback(hObject, ~)
+handles = guidata(hObject);
+
+SubjectID = fetch_SubjectID(handles);
+DataPath  = fullfile( fileparts(pwd), 'data', SubjectID);
+Run1_file = fullfile(DataPath,'Run1_pictures.mat');
+Run2_file = fullfile(DataPath,'Run2_pictures.mat');
+
+if exist(Run1_file,'file')~=2
+    error('%s does not exist : click on "Split" to make randomization', Run1_file)
+end
+if exist(Run2_file,'file')~=2
+    error('%s does not exist : click on "Split" to make randomization', Run2_file)
+end
+
+cprintf('Comment', 'Randomization checked for %s, ready to perform a run. \n', SubjectID)
+
+end
+
+% -------------------------------------------------------------------------
+function SubjectID = fetch_SubjectID(handles)
+
+SubjectID = get(handles.edit_SubjectID,'String');
+if isempty(SubjectID)
+    error('SubjectID:Empty','SubjectID is empty')
+end
+
+end

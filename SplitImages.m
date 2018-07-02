@@ -1,21 +1,24 @@
-function [ out ] = SplitImages()
+function [ Run1 , Run2 ] = SplitImages()
 %
 
-clear
-clc
+
+%% Randomizer
+
+rng('default')
+rng('shuffle')
+
 
 %% Fech the input lists : images & category
 
 [ Category ] = ListCategory;
 
-[ List ] = CheckImages;
+% [ List ] = CheckImages;
 
 Categ = fieldnames(Category);
 
 
 %% Slice into 2 groupes each subcategory
 
-out_exists = 0;
 
 for c = 1 : length(Categ)
     catname = Categ{c};
@@ -51,8 +54,8 @@ for c = 1 : length(Categ)
         
     end
     
-    out.Run1.(catname) =  GRP1(Shuffle(1:length(GRP1)));
-    out.Run2.(catname) =  GRP2(Shuffle(1:length(GRP2)));
+    Run1.(catname) =  GRP1(Shuffle(1:length(GRP1)));
+    Run2.(catname) =  GRP2(Shuffle(1:length(GRP2)));
     
 end
 

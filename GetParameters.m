@@ -101,7 +101,7 @@ Parameters.LIKERT.Scale.ScaleColor  = [255 255 255];                     % [R G 
 Parameters.LIKERT.Scale.CursorColor = [255 0   0  ];                     % [R G B] ( from 0 to 255 )
 Parameters.LIKERT.Scale.Voffcet     = 0.40;                              % Ypos = (1-Voffcet)*ScreenHight
 Parameters.LIKERT.Scale.Text_1      = 'J''aime';
-Parameters.LIKERT.Scale.Text_2      = 'Je désire';
+Parameters.LIKERT.Scale.Text_2      = 'Je desire';
 
 %%%%%%%%%%%%%%
 %  Keybinds  %
