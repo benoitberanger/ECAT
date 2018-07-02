@@ -7,7 +7,7 @@ f = gfile(p,'.*');
 f = cellstr(f{1});
 
 c = cell(size(f));
-
+tic
 for i = 1 : length(f)
     
     c{i} = Image( f{i} );
@@ -20,3 +20,4 @@ for i = 1 : length(f)
 end
 
 r = char(unique(cellstr(rats(Ratio))))
+toc

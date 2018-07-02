@@ -221,6 +221,20 @@ end
 S.Mask = Mask;
 
 
+%% GUI : Pre or Post ?
+
+switch get(get(handles.uipanel_Task,'SelectedObject'),'Tag')
+    case 'radiobutton_Pre'
+        PrePost = 'Pre';
+    case 'radiobutton_Post'
+        PrePost = 'Post';
+    otherwise
+        warning('ECAT:PreOrPost','Error in Pre-Post switch')
+end
+
+S.PrePost = PrePost;
+
+
 %% GUI : Check if Eyelink toolbox is available
 
 switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
