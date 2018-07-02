@@ -60,18 +60,17 @@ try
                 
                 Cross.Draw
                 Screen('DrawingFinished',S.PTB.wPtr);
-                lastFlipOnset = Screen('Flip',S.PTB.wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
+                TIME = Screen('Flip',S.PTB.wPtr);
                 
-                ER.AddEvent({EP.Data{evt,1} lastFlipOnset-StartTime []});
-                RR.AddEvent({['FixationCross__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                ER.AddEvent({EP.Data{evt,1} TIME-StartTime []});
+                RR.AddEvent({['FixationCross__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
-                when = lastFlipOnset + Parameters.FixationCross - S.PTB.slack;
+                when = TIME + Parameters.FixationCross - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                secs = lastFlipOnset;
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, TIME, keyCode] = KbCheck;
                     
                     if keyIsDown
                         % ~~~ ESCAPE key ? ~~~
@@ -100,17 +99,16 @@ try
                 Cross.Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                lastFlipOnset = Screen('Flip',S.PTB.wPtr, StartTime + EP.Data{evt,2} - S.PTB.slack);
-                ER.AddEvent({EP.Data{evt,1} lastFlipOnset-StartTime []});
-                RR.AddEvent({['PreparationCross__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr);
+                ER.AddEvent({EP.Data{evt,1} TIME-StartTime []});
+                RR.AddEvent({['PreparationCross__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
-                when = lastFlipOnset + Parameters.PreparePeriod - S.PTB.slack;
+                when = TIME + Parameters.PreparePeriod - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                secs = lastFlipOnset;
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, TIME, keyCode] = KbCheck;
                     
                     if keyIsDown
                         % ~~~ ESCAPE key ? ~~~
@@ -130,16 +128,15 @@ try
                 %% Blank screen
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['BlankScreen__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr, when);
+                RR.AddEvent({['BlankScreen__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
-                when = lastFlipOnset + Parameters.BlankPeriod - S.PTB.slack;
+                when = TIME + Parameters.BlankPeriod - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                secs = lastFlipOnset;
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, TIME, keyCode] = KbCheck;
                     
                     if keyIsDown
                         % ~~~ ESCAPE key ? ~~~
@@ -161,16 +158,15 @@ try
                 Screen('FillRect', S.PTB.wPtr, rand(1,3)*255, CenterRectOnPoint([0 0 500 500],S.PTB.CenterH,S.PTB.CenterV));
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Picture__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr, when);
+                RR.AddEvent({['Picture__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
-                when = lastFlipOnset + EP.Get( 'Picture', evt ) - S.PTB.slack;
+                when = TIME + EP.Get( 'Picture', evt ) - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                secs = lastFlipOnset;
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, TIME, keyCode] = KbCheck;
                     
                     if keyIsDown
                         % ~~~ ESCAPE key ? ~~~
@@ -201,16 +197,15 @@ try
                 Text_1.Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Likert__1__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr, when);
+                RR.AddEvent({['Likert__1__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
                 button_press = 0;
                 dpx = 0;
                 % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
-                when = lastFlipOnset + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
-                secs = lastFlipOnset;
+                when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
                     [keyIsDown, ~, keyCode] = KbCheck;
@@ -234,8 +229,8 @@ try
                         end
                         
                         if keyCode( S.Parameters.Fingers.Validate )
-                            BR.AddEvent({EP.Data{evt,1} round((secs-lastFlipOnset)*1000) Scale.cursor_pos_value})
-                            RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
+                            BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
+                            RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
                             button_press = 1;
                             fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                             break
@@ -253,7 +248,7 @@ try
                     Text_1.Draw
                     
                     Screen('DrawingFinished',S.PTB.wPtr);
-                    secs = Screen('Flip',S.PTB.wPtr);
+                    TIME = Screen('Flip',S.PTB.wPtr);
                     
                     
                 end % while
@@ -266,19 +261,20 @@ try
                 %% Hold__1
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                secs = Screen('Flip',S.PTB.wPtr);
-                RR.AddEvent({['Hold__1__' EP.Data{evt,1}] secs-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr);
+                RR.AddEvent({['Hold__1__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
                     fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                 end
                 
+                when = TIME + Parameters.HoldPeriod -S.PTB.IFI -S.PTB.slack ;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, TIME, keyCode] = KbCheck;
                     if keyIsDown
                         
                         % ~~~ ESCAPE key ? ~~~
@@ -310,16 +306,15 @@ try
                 Text_2.Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                lastFlipOnset = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Likert__2__' EP.Data{evt,1}] lastFlipOnset-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr, when);
+                RR.AddEvent({['Likert__2__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
                 button_press = 0;
                 dpx = 0;
                 % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
-                when = StartTime + EP.Data{evt+1,2} -S.PTB.IFI -S.PTB.slack ;
-                secs = lastFlipOnset;
+                when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
                     [keyIsDown, ~, keyCode] = KbCheck;
@@ -343,8 +338,8 @@ try
                         end
                         
                         if keyCode( S.Parameters.Fingers.Validate )
-                            BR.AddEvent({EP.Data{evt,1} round((secs-lastFlipOnset)*1000) Scale.cursor_pos_value})
-                            RR.AddEvent({['Click__' EP.Data{evt,1}] secs-StartTime [] []})
+                            BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
+                            RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
                             button_press = 1;
                             fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                             break
@@ -362,7 +357,7 @@ try
                     Text_2.Draw
                     
                     Screen('DrawingFinished',S.PTB.wPtr);
-                    secs = Screen('Flip',S.PTB.wPtr);
+                    TIME = Screen('Flip',S.PTB.wPtr);
                     
                     
                 end % while
@@ -375,20 +370,20 @@ try
                 %% Hold__2
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
-                secs = Screen('Flip',S.PTB.wPtr);
-                RR.AddEvent({['Hold__2__' EP.Data{evt,1}] secs-StartTime [] []})
+                TIME = Screen('Flip',S.PTB.wPtr);
+                RR.AddEvent({['Hold__2__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
                     fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                 end
                 
-                when = StartTime + EP.Data{evt+1,2} - S.PTB.slack;
+                when = TIME + Parameters.HoldPeriod -S.PTB.IFI -S.PTB.slack ;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while secs < when
+                while TIME < when
                     
                     % Fetch keys
-                    [keyIsDown, secs, keyCode] = KbCheck;
+                    [keyIsDown, TIME, keyCode] = KbCheck;
                     if keyIsDown
                         
                         % ~~~ ESCAPE key ? ~~~
