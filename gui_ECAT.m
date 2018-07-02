@@ -781,7 +781,7 @@ else % Create the figure
         'BackgroundColor',buttonBGcolor,...
         'Tag',b_split.tag,...
         'Callback',@pushbutton_Split_Callback,...
-        'Tooltip','Split in 2 subset the images for this SubjectID : 1 for Run1, 1 for Run2');
+        'Tooltip','Split in 2 subset the images for this SubjectID : 1 for Pre, 1 for Post');
     
     
     % ---------------------------------------------------------------------
@@ -1091,17 +1091,17 @@ handles = guidata(hObject);
 
 SubjectID = fetch_SubjectID(handles);
 DataPath  = fullfile( fileparts(pwd), 'data', SubjectID);
-Run1_file = fullfile(DataPath,'Run1_pictures.mat');
-Run2_file = fullfile(DataPath,'Run2_pictures.mat');
+Pre_file  = fullfile(DataPath,'Pre_pictures.mat');
+Post_file = fullfile(DataPath,'Post_pictures.mat');
 
-if exist(Run1_file,'file')==2
-    warning('%s already exists', Run1_file)
+if exist(Pre_file,'file')==2
+    warning('%s already exists', Pre_file)
     fprintf('Randomization has already be done. \n')
     fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
     return
 end
-if exist(Run2_file,'file')==2
-    warning('%s already exists', Run2_file)
+if exist(Post_file,'file')==2
+    warning('%s already exists', Post_file)
     fprintf('Randomization has already be done. \n')
     fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
     return
@@ -1109,15 +1109,17 @@ end
 
 fprintf('Splitted list of files does not exist for : %s \n', DataPath)
 
-[ Run1 , Run2 ] = SplitImages(); %#ok<ASGLU>
+[ Pre , Post ] = SplitImages(); %#ok<ASGLU>
 
-mkdir(DataPath)
+if ~exist(DataPath,'dir')
+    mkdir(DataPath)
+end
 
-save(Run1_file, 'Run1')
-fprintf('Saved : %s \n', Run1_file)
+save(Pre_file, 'Pre')
+fprintf('Saved : %s \n', Pre_file)
 
-save(Run2_file, 'Run2')
-fprintf('Saved : %s \n', Run2_file)
+save(Post_file, 'Post')
+fprintf('Saved : %s \n', Post_file)
 
 end
 
@@ -1128,17 +1130,19 @@ handles = guidata(hObject);
 
 SubjectID = fetch_SubjectID(handles);
 DataPath  = fullfile( fileparts(pwd), 'data', SubjectID);
-Run1_file = fullfile(DataPath,'Run1_pictures.mat');
-Run2_file = fullfile(DataPath,'Run2_pictures.mat');
+Pre_file = fullfile(DataPath,'Pre_pictures.mat');
+Post_file = fullfile(DataPath,'Post_pictures.mat');
 
-if exist(Run1_file,'file')~=2
-    error('%s does not exist : click on "Split" to make randomization', Run1_file)
+if exist(Pre_file,'file')~=2
+    error('%s does not exist : click on "Split" to make randomization', Pre_file)
 end
-if exist(Run2_file,'file')~=2
-    error('%s does not exist : click on "Split" to make randomization', Run2_file)
+if exist(Post_file,'file')~=2
+    error('%s does not exist : click on "Split" to make randomization', Post_file)
 end
 
-cprintf('Comment', 'Randomization checked for %s, ready to perform a run. \n', SubjectID)
+cprintf('Comment', 'Randomization checked for %s, ready to perform a run : \n', SubjectID)
+cprintf('Comment', '%s \n', Pre_file)
+cprintf('Comment', '%s \n', Post_file)
 
 end
 

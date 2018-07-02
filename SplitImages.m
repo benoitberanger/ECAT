@@ -1,4 +1,4 @@
-function [ Run1 , Run2 ] = SplitImages()
+function [ Pre , Post ] = SplitImages()
 %
 
 
@@ -54,8 +54,8 @@ for c = 1 : length(Categ)
         
     end
     
-    Run1.(catname) =  GRP1(Shuffle(1:length(GRP1)));
-    Run2.(catname) =  GRP2(Shuffle(1:length(GRP2)));
+    Pre.(catname)  =  GRP1(Shuffle(1:length(GRP1)));
+    Post.(catname) =  GRP2(Shuffle(1:length(GRP2)));
     
 end
 

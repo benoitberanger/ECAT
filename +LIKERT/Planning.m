@@ -4,6 +4,9 @@ global S
 if nargout < 1 % only to plot the paradigme when we execute the function outside of the main script
     S.Environement  = 'MRI';
     S.OperationMode = 'Acquisition';
+    S.SubjectID     = '001';
+    S.DataPath      = fullfile( fileparts(pwd) , 'data' , S.SubjectID , filesep);
+    S.PrePost       = 'Post';
 end
 
 
@@ -42,6 +45,26 @@ end
 NrTrials = Parameters.NrPics;
 
 
+%% Randomization of order for the pics
+
+switch S.PrePost
+    case 'Pre'
+        l = load(fullfile(S.DataPath,'Pre_pictures.mat'));
+    case 'Post'
+        l = load(fullfile(S.DataPath,'Post_pictures.mat'));
+end
+
+NEU = l.(S.PrePost).NEU; % 1
+ISO = l.(S.PrePost).ISO; % 2
+ERO = l.(S.PrePost).ERO; % 3
+
+order = [];
+
+for i = 1 : length(NEU)
+    order = [order Shuffle(1:3)];
+end
+
+
 %% Define a planning <--- paradigme
 
 
@@ -61,10 +84,29 @@ EP.AddStartTime('StartTime',0);
 
 EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
 
+c_NEU = 0;
+c_ISO = 0;
+c_ERO = 0;
+
 for evt = 1 : NrTrials
+    
     pic_dur = (Parameters.PictureDuration(2) - Parameters.PictureDuration(1))*rand + Parameters.PictureDuration(1);
     dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2/2 + 2*Parameters.HoldPeriod;
-    EP.AddPlanning({ 'pic' NextOnset(EP) dur evt pic_dur});
+    
+    switch order(evt)
+        case 0
+            c_NEU = c_NEU + 1;
+            target = NEU{c_NEU};
+        case 1
+            c_ISO = c_ISO + 1;
+            target = ISO{c_ISO};
+        case 2
+            c_ERO = c_ERO + 1;
+            target = ERO{c_ERO};
+    end
+    
+    EP.AddPlanning({ target NextOnset(EP) dur evt pic_dur});
+    
 end
 
 EP.AddPlanning({ 'FixationCross' NextOnset(EP) Parameters.FixationCross [] []});
