@@ -7,6 +7,7 @@ if nargout < 1 % only to plot the paradigme when we execute the function outside
     S.SubjectID     = '001';
     S.DataPath      = fullfile( fileparts(pwd) , 'data' , S.SubjectID , filesep);
     S.PrePost       = 'Post';
+    S.ListAB        = 'B';
 end
 
 
@@ -14,7 +15,7 @@ end
 
 switch S.OperationMode
     case 'Acquisition'
-        Parameters.NrPics           = 216;
+        Parameters.NrPics           = 216/2;
         
         Parameters.PreparePeriod    = 0.5; % second
         Parameters.BlankPeriod      = 0.5; % second
@@ -23,7 +24,7 @@ switch S.OperationMode
         Parameters.HoldPeriod       = 0.5; % second
         Parameters.FixationCross    = 20;  % second
     case 'FastDebug'
-        Parameters.NrPics           = 216;
+        Parameters.NrPics           = 216/2;
         
         Parameters.PreparePeriod    = 0;
         Parameters.BlankPeriod      = 0;
@@ -57,21 +58,16 @@ NrTrials = Parameters.NrPics;
 
 %% Randomization of order for the pics
 
-switch S.PrePost
-    case 'Pre'
-        l = load(fullfile(S.DataPath,'Pre_pictures.mat'));
-    case 'Post'
-        l = load(fullfile(S.DataPath,'Post_pictures.mat'));
-end
+l = load(fullfile(S.DataPath,[S.SubjectID '_' S.PrePost S.ListAB '_list.mat']));
 
-NEU = l.(S.PrePost).NEU; % 1
-ISO = l.(S.PrePost).ISO; % 2
-ERO = l.(S.PrePost).ERO; % 3
+NEU = l.([S.PrePost S.ListAB]).NEU; % 1
+ISO = l.([S.PrePost S.ListAB]).ISO; % 2
+ERO = l.([S.PrePost S.ListAB]).ERO; % 3
 
 order = [];
 
 for i = 1 : length(NEU)
-    order = [order Shuffle(1:3)];
+    order = [order Shuffle(1:3)]; %#ok<AGROW>
 end
 
 

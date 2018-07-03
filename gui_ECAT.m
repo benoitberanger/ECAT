@@ -1062,13 +1062,13 @@ end % function
 % -------------------------------------------------------------------------
 function edit_SubjectID_Callback(hObject, ~)
 
-NrChar = 3;
+MinNrChar = 3;
 
 id_str = get(hObject,'String');
 
-if length(id_str) ~= NrChar
+if length(id_str) < MinNrChar
     set(hObject,'String','')
-    error('SubjectID must be %d chars, such as 001, 002, ...', NrChar)
+    error('SubjectID must be at least %d chars', MinNrChar)
 end
 
 fprintf('SubjectID OK : %s \n', id_str)
@@ -1164,37 +1164,39 @@ end
 function pushbutton_Split_Callback(hObject, ~)
 handles = guidata(hObject);
 
-SubjectID = fetch_SubjectID(handles);
-DataPath  = fullfile( fileparts(pwd), 'data', SubjectID);
-Pre_file  = fullfile(DataPath,'Pre_pictures.mat');
-Post_file = fullfile(DataPath,'Post_pictures.mat');
+alllists = {'PreA'; 'PreB'; 'PostA'; 'PostB'};
 
-if exist(Pre_file,'file')==2
-    warning('%s already exists', Pre_file)
-    fprintf('Randomization has already be done. \n')
-    fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
-    return
-end
-if exist(Post_file,'file')==2
-    warning('%s already exists', Post_file)
-    fprintf('Randomization has already be done. \n')
-    fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
-    return
+SubjectID = fetch_SubjectID(handles);
+DataPath  = fullfile( fileparts(pwd), 'data', SubjectID, filesep);
+
+PrePostAB_files = strcat( DataPath, SubjectID, '_' , alllists, '_list.mat' );
+
+for file = 1 : length(PrePostAB_files)
+    
+    if exist(PrePostAB_files{file},'file')==2
+        warning('%s already exists', PrePostAB_files{file})
+        fprintf('Randomization has already be done. \n')
+        fprintf('If you want to do a new randomization, you need to manually delete the files. \n\n')
+        return
+    end
+    
 end
 
 fprintf('Splitted list of files does not exist for : %s \n', DataPath)
 
-[ Pre , Post ] = SplitImages(); %#ok<ASGLU>
+[ PreA, PreB, PostA , PostB ] = SplitImages(); %#ok<ASGLU>
 
 if ~exist(DataPath,'dir')
     mkdir(DataPath)
 end
 
-save(Pre_file, 'Pre')
-fprintf('Saved : %s \n', Pre_file)
 
-save(Post_file, 'Post')
-fprintf('Saved : %s \n', Post_file)
+for file = 1 : length(PrePostAB_files)
+    
+    save(PrePostAB_files{file}, sprintf('%s',alllists{file}) )
+    fprintf('Saved : %s \n', PrePostAB_files{file})
+    
+end
 
 end
 
@@ -1203,21 +1205,27 @@ end
 function pushbutton_CheckSplit_Callback(hObject, ~)
 handles = guidata(hObject);
 
-SubjectID = fetch_SubjectID(handles);
-DataPath  = fullfile( fileparts(pwd), 'data', SubjectID);
-Pre_file = fullfile(DataPath,'Pre_pictures.mat');
-Post_file = fullfile(DataPath,'Post_pictures.mat');
+alllists = {'PreA'; 'PreB'; 'PostA'; 'PostB'};
 
-if exist(Pre_file,'file')~=2
-    error('%s does not exist : click on "Split" to make randomization', Pre_file)
-end
-if exist(Post_file,'file')~=2
-    error('%s does not exist : click on "Split" to make randomization', Post_file)
+SubjectID = fetch_SubjectID(handles);
+DataPath  = fullfile( fileparts(pwd), 'data', SubjectID, filesep);
+
+PrePostAB_files = strcat( DataPath, SubjectID, '_' , alllists, '_list.mat' );
+
+for file = 1 : length(PrePostAB_files)
+    
+    if exist(PrePostAB_files{file},'file')~=2
+        error('%s does not exist : click on "Split" to make randomization', PrePostAB_files{file})
+    end
+    
 end
 
 cprintf('Comment', 'Randomization checked for %s, ready to perform a run : \n', SubjectID)
-cprintf('Comment', '%s \n', Pre_file)
-cprintf('Comment', '%s \n', Post_file)
+for file = 1 : length(PrePostAB_files)
+    
+    cprintf('Comment', '%s \n', PrePostAB_files{file})
+    
+end
 
 end
 

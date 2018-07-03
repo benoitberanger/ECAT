@@ -1,4 +1,4 @@
-function [ Pre , Post ] = SplitImages()
+function [ PreA, PreB, PostA , PostB ] = SplitImages()
 %
 
 
@@ -54,8 +54,20 @@ for c = 1 : length(Categ)
         
     end
     
-    Pre.(catname)  =  GRP1(Shuffle(1:length(GRP1)));
-    Post.(catname) =  GRP2(Shuffle(1:length(GRP2)));
+    
+    GRP1 = GRP1(Shuffle(1:length(GRP1)));
+    GRP2 = GRP2(Shuffle(1:length(GRP2)));
+    
+    GRP1_A = GRP1(1:end/2);
+    GRP1_B = GRP1(end/2+1:end);
+    
+    GRP2_A = GRP2(1:end/2);
+    GRP2_B = GRP2(end/2+1:end);
+    
+    PreA. (catname) = GRP1_A;
+    PreB. (catname) = GRP1_B;
+    PostA.(catname) = GRP2_A;
+    PostB.(catname) = GRP2_B;
     
 end
 
