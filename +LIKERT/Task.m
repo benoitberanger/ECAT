@@ -20,8 +20,8 @@ try
     
     Cross = LIKERT.Prepare.Cross;
     Scale = LIKERT.Prepare.Scale;
-    [ Text_1 , Text_2 ] =  LIKERT.Prepare.Text;
-    [ Image , List ]= LIKERT.Prepare.Image;
+    [ Text_1 , Text_2 ] = LIKERT.Prepare.Text;
+    [ Image  , List   ] = LIKERT.Prepare.Image;
     Parameters.List = List;
     
     
@@ -164,8 +164,13 @@ try
                 TIME = Screen('Flip',S.PTB.wPtr, when);
                 RR.AddEvent({['Picture__' EP.Data{evt,1}] TIME-StartTime [] []})
                 
-                if size(Image.(EP.Data{evt,1}).X,1) > 768
-                    0
+                % Check is the rescale is ok
+                [x,y] = RectSize(Image.(EP.Data{evt,1}).currRect);
+                if x > S.PTB.wRect(3)
+                    warning('x > window size')
+                end
+                if y > S.PTB.wRect(4)
+                    warning('y > window size')
                 end
                 
                 when = TIME + EP.Get( 'Picture', evt ) - S.PTB.slack;
