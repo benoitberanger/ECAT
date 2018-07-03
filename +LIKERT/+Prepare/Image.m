@@ -1,4 +1,4 @@
-function [ image , list ]= Image()
+function [ image , list ]= Image( Parameters )
 global S
 
 [ list ] = CheckImages;

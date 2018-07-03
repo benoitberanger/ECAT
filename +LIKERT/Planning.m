@@ -58,11 +58,19 @@ NrTrials = Parameters.NrPics;
 
 %% Randomization of order for the pics
 
-l = load(fullfile(S.DataPath,[S.SubjectID '_' S.PrePost S.ListAB '_list.mat']));
+listfile = fullfile(S.DataPath,[S.SubjectID '_' S.PrePost S.ListAB '_list.mat']);
+
+l = load(listfile);
+cprintf('Keywords','Using this file :' );
+cprintf('Strings',' %s \n' , listfile);
 
 NEU = l.([S.PrePost S.ListAB]).NEU; % 1
 ISO = l.([S.PrePost S.ListAB]).ISO; % 2
 ERO = l.([S.PrePost S.ListAB]).ERO; % 3
+
+Parameters.NEU = NEU;
+Parameters.ISO = ISO;
+Parameters.ERO = ERO;
 
 order = [];
 

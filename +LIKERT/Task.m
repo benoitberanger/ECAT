@@ -21,7 +21,7 @@ try
     Cross = LIKERT.Prepare.Cross;
     Scale = LIKERT.Prepare.Scale;
     [ Text_1 , Text_2 ] = LIKERT.Prepare.Text;
-    [ Image  , List   ] = LIKERT.Prepare.Image;
+    [ Image  , List   ] = LIKERT.Prepare.Image( Parameters );
     Parameters.List = List;
     
     
