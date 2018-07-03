@@ -220,6 +220,7 @@ try
                     dpx = 0;
                     % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
                     when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
+                    RT_onset = TIME;
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     while TIME < when
                         
@@ -245,7 +246,7 @@ try
                             end
                             
                             if keyCode( S.Parameters.Fingers.Validate )
-                                BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
+                                BR.AddEvent({EP.Data{evt,1} round((TIME-RT_onset)*1000) Scale.cursor_pos_value})
                                 RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
                                 button_press = 1;
                                 fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
@@ -329,6 +330,7 @@ try
                     dpx = 0;
                     % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
                     when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
+                    RT_onset = TIME;
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     while TIME < when
                         
@@ -354,7 +356,7 @@ try
                             end
                             
                             if keyCode( S.Parameters.Fingers.Validate )
-                                BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
+                                BR.AddEvent({EP.Data{evt,1} round((TIME-RT_onset)*1000) Scale.cursor_pos_value})
                                 RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
                                 button_press = 1;
                                 fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
