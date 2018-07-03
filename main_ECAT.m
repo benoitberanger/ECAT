@@ -99,6 +99,34 @@ end
 S.OperationMode = OperationMode;
 
 
+%% GUI : Pre or Post ?
+
+switch get(get(handles.uipanel_PrePost,'SelectedObject'),'Tag')
+    case 'radiobutton_Pre'
+        PrePost = 'Pre';
+    case 'radiobutton_Post'
+        PrePost = 'Post';
+    otherwise
+        warning('ECAT:PreOrPost','Error in Pre-Post switch')
+end
+
+S.PrePost = PrePost;
+
+
+%% GUI : A or B ?
+
+switch get(get(handles.uipanel_ListAB,'SelectedObject'),'Tag')
+    case 'radiobutton_ListA'
+        ListAB = 'A';
+    case 'radiobutton_ListB'
+        ListAB = 'B';
+    otherwise
+        warning('ECAT:ListAB','Error in ListA/ListB switch')
+end
+
+S.ListAB = ListAB;
+
+
 %% GUI + MAIN : Subject ID & Run number
 
 SubjectID = get(handles.edit_SubjectID,'String');
@@ -147,8 +175,8 @@ end
 RunNumber = LastRunNumber + 1;
 % -----------------------------------------------------------------
 
-DataFile     = sprintf('%s%s_%s_%s_%s_run%0.2d', DataPath, S.TimeStampFile, SubjectID, Environement, Task, RunNumber );
-DataFileName = sprintf(  '%s_%s_%s_%s_run%0.2d',           S.TimeStampFile, SubjectID, Environement, Task, RunNumber  );
+DataFile     = sprintf('%s%s_%s_%s_%s_%s_%s_run%0.2d', DataPath, S.TimeStampFile, SubjectID, Environement, Task, PrePost, ListAB, RunNumber );
+DataFileName = sprintf(  '%s_%s_%s_%s_%s_%s_run%0.2d',           S.TimeStampFile, SubjectID, Environement, Task, PrePost, ListAB, RunNumber  );
 
 S.SubjectID     = SubjectID;
 S.RunNumber     = RunNumber;
@@ -221,20 +249,6 @@ end
 S.Mask = Mask;
 
 
-%% GUI : Pre or Post ?
-
-switch get(get(handles.uipanel_Task,'SelectedObject'),'Tag')
-    case 'radiobutton_Pre'
-        PrePost = 'Pre';
-    case 'radiobutton_Post'
-        PrePost = 'Post';
-    otherwise
-        warning('ECAT:PreOrPost','Error in Pre-Post switch')
-end
-
-S.PrePost = PrePost;
-
-
 %% GUI : Check if Eyelink toolbox is available
 
 switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
@@ -261,25 +275,14 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
         % Eyelink connected ?
         Eyelink.IsConnected
         
-        % File name for the eyelink : 8 char maximum
-        switch Task
-            case 'EyelinkCalibration'
-                task = 'E'; % don't care...
-            case 'STOPSIGNAL'
-                task = 'S';
-            case 'LIKERT'
-                task = 'L';
-            case 'TryLikertScale'
-                task = 'T';
-            otherwise
-                error('ECAT:Task','Task ?')
-        end
+        eyelink_max_finename = 8;
+        str = ['a':'z' 'A':'Z' '0':'9'];
+        ln_str = length(str);
         
-        EyelinkFile_noRun = [ 'SC' SubjectID task ];
+        name_num = randi(ln_str,[1 eyelink_max_finename]);
+        name_str = str(name_num);
         
-        EyelinkFile = [EyelinkFile_noRun sprintf('%0.2d',RunNumber)];
-        
-        S.EyelinkFile = EyelinkFile;
+        S.EyelinkFile = name_str;
         
     otherwise
         
