@@ -195,223 +195,228 @@ try
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
-                %% Likert 1 : J'aime
-                
-                % Pick a random value around the half of the scale
-                Scale.cursor_pos_value = (4-3)*rand + 3 ; % values must be in [3 - 4]
-                if abs( Scale.cursor_pos_value - 3.5 ) < 0.1
-                    Scale.cursor_pos_value = Scale.cursor_pos_value + sign(rand-0.5)*0.2;
-                end
-                Scale.cursor_pos_px    = Scale.value2px( Scale.cursor_pos_value );
-                Scale.UpdateCursor(0);
-                
-                Scale.Draw
-                Text_1.Draw
-                
-                Screen('DrawingFinished',S.PTB.wPtr);
-                TIME = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Likert__1__' EP.Data{evt,1}] TIME-StartTime [] []})
-                
-                button_press = 0;
-                dpx = 0;
-                % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
-                when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while TIME < when
+                if ~strcmp(EP.Data{evt,1}(1:3),'NEU')
+                    % In case of NEUtral pics, no likert scale
                     
-                    % Fetch keys
-                    [keyIsDown, ~, keyCode] = KbCheck;
                     
-                    if keyIsDown
-                        
-                        % ~~~ ESCAPE key ? ~~~
-                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
-                        if EXIT
-                            break
-                        end
-                        
-                        if keyCode( S.Parameters.Fingers.Left )
-                            dpx = dpx - 1;
-                            dpx = max( dpx , -dpx_lim );
-                        end
-                        
-                        if keyCode( S.Parameters.Fingers.Right )
-                            dpx = dpx + 1;
-                            dpx = min( dpx , +dpx_lim );
-                        end
-                        
-                        if keyCode( S.Parameters.Fingers.Validate )
-                            BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
-                            RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
-                            button_press = 1;
-                            fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
-                            break
-                        end
-                        
-                        Scale.UpdateCursor( dpx )
-                        
-                    else
-                        
-                        dpx = 0;
-                        
+                    %% Likert 1 : J'aime
+                    
+                    % Pick a random value around the half of the scale
+                    Scale.cursor_pos_value = (4-3)*rand + 3 ; % values must be in [3 - 4]
+                    if abs( Scale.cursor_pos_value - 3.5 ) < 0.1
+                        Scale.cursor_pos_value = Scale.cursor_pos_value + sign(rand-0.5)*0.2;
                     end
+                    Scale.cursor_pos_px    = Scale.value2px( Scale.cursor_pos_value );
+                    Scale.UpdateCursor(0);
                     
                     Scale.Draw
                     Text_1.Draw
                     
                     Screen('DrawingFinished',S.PTB.wPtr);
+                    TIME = Screen('Flip',S.PTB.wPtr, when);
+                    RR.AddEvent({['Likert__1__' EP.Data{evt,1}] TIME-StartTime [] []})
+                    
+                    button_press = 0;
+                    dpx = 0;
+                    % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
+                    when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    while TIME < when
+                        
+                        % Fetch keys
+                        [keyIsDown, ~, keyCode] = KbCheck;
+                        
+                        if keyIsDown
+                            
+                            % ~~~ ESCAPE key ? ~~~
+                            [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                            if EXIT
+                                break
+                            end
+                            
+                            if keyCode( S.Parameters.Fingers.Left )
+                                dpx = dpx - 1;
+                                dpx = max( dpx , -dpx_lim );
+                            end
+                            
+                            if keyCode( S.Parameters.Fingers.Right )
+                                dpx = dpx + 1;
+                                dpx = min( dpx , +dpx_lim );
+                            end
+                            
+                            if keyCode( S.Parameters.Fingers.Validate )
+                                BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
+                                RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
+                                button_press = 1;
+                                fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
+                                break
+                            end
+                            
+                            Scale.UpdateCursor( dpx )
+                            
+                        else
+                            
+                            dpx = 0;
+                            
+                        end
+                        
+                        Scale.Draw
+                        Text_1.Draw
+                        
+                        Screen('DrawingFinished',S.PTB.wPtr);
+                        TIME = Screen('Flip',S.PTB.wPtr);
+                        
+                        
+                    end % while
+                    if EXIT
+                        break
+                    end
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
+                    
+                    %% Hold__1
+                    
+                    Screen('DrawingFinished',S.PTB.wPtr);
                     TIME = Screen('Flip',S.PTB.wPtr);
+                    RR.AddEvent({['Hold__1__' EP.Data{evt,1}] TIME-StartTime [] []})
                     
-                    
-                end % while
-                if EXIT
-                    break
-                end
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                
-                
-                %% Hold__1
-                
-                Screen('DrawingFinished',S.PTB.wPtr);
-                TIME = Screen('Flip',S.PTB.wPtr);
-                RR.AddEvent({['Hold__1__' EP.Data{evt,1}] TIME-StartTime [] []})
-                
-                if ~button_press
-                    BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
-                    fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
-                end
-                
-                when = TIME + Parameters.HoldPeriod -S.PTB.IFI -S.PTB.slack ;
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while TIME < when
-                    
-                    % Fetch keys
-                    [keyIsDown, TIME, keyCode] = KbCheck;
-                    if keyIsDown
-                        
-                        % ~~~ ESCAPE key ? ~~~
-                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
-                        if EXIT
-                            break
-                        end
-                        
+                    if ~button_press
+                        BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
+                        fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                     end
                     
-                end % while
-                if EXIT
-                    break
-                end
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                
-                
-                %% Likert 2 : Je désire
-                
-                % Pick a random value around the half of the scale
-                Scale.cursor_pos_value = (4-3)*rand + 3 ; % values must be in [3 - 4]
-                if abs( Scale.cursor_pos_value - 3.5 ) < 0.1
-                    Scale.cursor_pos_value = Scale.cursor_pos_value + sign(rand-0.5)*0.2;
-                end
-                Scale.cursor_pos_px = Scale.value2px( Scale.cursor_pos_value );
-                Scale.UpdateCursor(0);
-                
-                Scale.Draw
-                Text_2.Draw
-                
-                Screen('DrawingFinished',S.PTB.wPtr);
-                TIME = Screen('Flip',S.PTB.wPtr, when);
-                RR.AddEvent({['Likert__2__' EP.Data{evt,1}] TIME-StartTime [] []})
-                
-                button_press = 0;
-                dpx = 0;
-                % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
-                when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while TIME < when
-                    
-                    % Fetch keys
-                    [keyIsDown, ~, keyCode] = KbCheck;
-                    
-                    if keyIsDown
+                    when = TIME + Parameters.HoldPeriod -S.PTB.IFI -S.PTB.slack ;
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    while TIME < when
                         
-                        % ~~~ ESCAPE key ? ~~~
-                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
-                        if EXIT
-                            break
+                        % Fetch keys
+                        [keyIsDown, TIME, keyCode] = KbCheck;
+                        if keyIsDown
+                            
+                            % ~~~ ESCAPE key ? ~~~
+                            [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                            if EXIT
+                                break
+                            end
+                            
                         end
                         
-                        if keyCode( S.Parameters.Fingers.Left )
-                            dpx = dpx - 1;
-                            dpx = max( dpx , -dpx_lim );
-                        end
-                        
-                        if keyCode( S.Parameters.Fingers.Right )
-                            dpx = dpx + 1;
-                            dpx = min( dpx , +dpx_lim );
-                        end
-                        
-                        if keyCode( S.Parameters.Fingers.Validate )
-                            BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
-                            RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
-                            button_press = 1;
-                            fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
-                            break
-                        end
-                        
-                        Scale.UpdateCursor( dpx )
-                        
-                    else
-                        
-                        dpx = 0;
-                        
+                    end % while
+                    if EXIT
+                        break
                     end
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
+                    
+                    %% Likert 2 : Je désire
+                    
+                    % Pick a random value around the half of the scale
+                    Scale.cursor_pos_value = (4-3)*rand + 3 ; % values must be in [3 - 4]
+                    if abs( Scale.cursor_pos_value - 3.5 ) < 0.1
+                        Scale.cursor_pos_value = Scale.cursor_pos_value + sign(rand-0.5)*0.2;
+                    end
+                    Scale.cursor_pos_px = Scale.value2px( Scale.cursor_pos_value );
+                    Scale.UpdateCursor(0);
                     
                     Scale.Draw
                     Text_2.Draw
                     
                     Screen('DrawingFinished',S.PTB.wPtr);
-                    TIME = Screen('Flip',S.PTB.wPtr);
+                    TIME = Screen('Flip',S.PTB.wPtr, when);
+                    RR.AddEvent({['Likert__2__' EP.Data{evt,1}] TIME-StartTime [] []})
                     
-                    
-                end % while
-                if EXIT
-                    break
-                end
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                
-                
-                %% Hold__2
-                
-                Screen('DrawingFinished',S.PTB.wPtr);
-                TIME = Screen('Flip',S.PTB.wPtr);
-                RR.AddEvent({['Hold__2__' EP.Data{evt,1}] TIME-StartTime [] []})
-                
-                if ~button_press
-                    BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
-                    fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
-                end
-                
-                when = TIME + Parameters.HoldPeriod -S.PTB.IFI -S.PTB.slack ;
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                while TIME < when
-                    
-                    % Fetch keys
-                    [keyIsDown, TIME, keyCode] = KbCheck;
-                    if keyIsDown
+                    button_press = 0;
+                    dpx = 0;
+                    % -S.PTB.slack*3 : 1 frame in advance, to keep a reliable timing on the Hold period if no validation
+                    when = TIME + Parameters.LikertDuration -S.PTB.IFI -S.PTB.slack ;
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    while TIME < when
                         
-                        % ~~~ ESCAPE key ? ~~~
-                        [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
-                        if EXIT
-                            break
+                        % Fetch keys
+                        [keyIsDown, ~, keyCode] = KbCheck;
+                        
+                        if keyIsDown
+                            
+                            % ~~~ ESCAPE key ? ~~~
+                            [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                            if EXIT
+                                break
+                            end
+                            
+                            if keyCode( S.Parameters.Fingers.Left )
+                                dpx = dpx - 1;
+                                dpx = max( dpx , -dpx_lim );
+                            end
+                            
+                            if keyCode( S.Parameters.Fingers.Right )
+                                dpx = dpx + 1;
+                                dpx = min( dpx , +dpx_lim );
+                            end
+                            
+                            if keyCode( S.Parameters.Fingers.Validate )
+                                BR.AddEvent({EP.Data{evt,1} round((TIME-TIME)*1000) Scale.cursor_pos_value})
+                                RR.AddEvent({['Click__' EP.Data{evt,1}] TIME-StartTime [] []})
+                                button_press = 1;
+                                fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
+                                break
+                            end
+                            
+                            Scale.UpdateCursor( dpx )
+                            
+                        else
+                            
+                            dpx = 0;
+                            
                         end
                         
+                        Scale.Draw
+                        Text_2.Draw
+                        
+                        Screen('DrawingFinished',S.PTB.wPtr);
+                        TIME = Screen('Flip',S.PTB.wPtr);
+                        
+                        
+                    end % while
+                    if EXIT
+                        break
+                    end
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
+                    
+                    %% Hold__2
+                    
+                    Screen('DrawingFinished',S.PTB.wPtr);
+                    TIME = Screen('Flip',S.PTB.wPtr);
+                    RR.AddEvent({['Hold__2__' EP.Data{evt,1}] TIME-StartTime [] []})
+                    
+                    if ~button_press
+                        BR.AddEvent({EP.Data{evt,1} -1 Scale.cursor_pos_value})
+                        fprintf(' %4.dms %1.1f ', BR.Data{BR.EventCount,2} , BR.Data{BR.EventCount,3} )
                     end
                     
-                end % while
-                if EXIT
-                    break
+                    when = TIME + Parameters.HoldPeriod -S.PTB.IFI -S.PTB.slack ;
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    while TIME < when
+                        
+                        % Fetch keys
+                        [keyIsDown, TIME, keyCode] = KbCheck;
+                        if keyIsDown
+                            
+                            % ~~~ ESCAPE key ? ~~~
+                            [ EXIT, StopTime ] = Common.Interrupt( keyCode, ER, RR, StartTime );
+                            if EXIT
+                                break
+                            end
+                            
+                        end
+                        
+                    end % while
+                    if EXIT
+                        break
+                    end
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
                 end
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                
                 
                 fprintf('\n')
                 
@@ -429,12 +434,13 @@ try
     %% End of stimulation
     
     for img = 1 : size(Parameters.List,1)
-         Screen('Close', Image.(Parameters.List{img,1}).texPtr );
+        Screen('Close', Image.(Parameters.List{img,1}).texPtr );
     end
     
     TaskData = Common.EndOfStimulation( TaskData, EP, ER, RR, KL, StartTime, StopTime );
     TaskData.Parameters = Parameters;
     
+    BR.ClearEmptyEvents;
     TaskData.BR = BR;
     assignin('base','BR', BR)
     

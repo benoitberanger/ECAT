@@ -101,18 +101,21 @@ c_ERO = 0;
 for evt = 1 : NrTrials
     
     pic_dur = (Parameters.PictureDuration(2) - Parameters.PictureDuration(1))*rand + Parameters.PictureDuration(1);
-    dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2/2 + 2*Parameters.HoldPeriod;
+    dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur;
     
     switch order(evt)
         case 1
             c_NEU = c_NEU + 1;
             target = NEU{c_NEU};
+            % no likertscale here
         case 2
             c_ISO = c_ISO + 1;
             target = ISO{c_ISO};
+            dur = dur + Parameters.LikertDuration*2/2 + 2*Parameters.HoldPeriod;
         case 3
             c_ERO = c_ERO + 1;
             target = ERO{c_ERO};
+            dur = dur + Parameters.LikertDuration*2/2 + 2*Parameters.HoldPeriod;
     end
     
     EP.AddPlanning({ target NextOnset(EP) dur evt pic_dur});
