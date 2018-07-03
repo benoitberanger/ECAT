@@ -21,11 +21,11 @@ in = {
 'ISO_FHH_3'  1  8
 
 'ERO_ANA_FH_2'   1  24
-'ERO_ANA_F_1'    1  24
+'ERO_ERO_F_1'    1  24
 'ERO_MUL_FFH_3'  1   8
 'ERO_MUL_FFHH_4' 1   8
 'ERO_MUL_FHH_3'  1   8
-'ERO_MUL_FH_2'   1  24
+'ERO_ORA_FH_2'   1  24
 'ERO_PET_F_1'    1  12
 'ERO_PET_FH_2'   13 24
 'ERO_VAG_FH_2'   1  24

@@ -23,14 +23,24 @@ switch S.OperationMode
         Parameters.HoldPeriod       = 0.5; % second
         Parameters.FixationCross    = 20;  % second
     case 'FastDebug'
-        Parameters.NrPics           = 6;
+        Parameters.NrPics           = 216;
         
-        Parameters.PreparePeriod    = 0.5;
-        Parameters.BlankPeriod      = 0.5;
-        Parameters.PictureDuration  = [0.5 1];
-        Parameters.LikertDuration   = 3;
-        Parameters.HoldPeriod       = 0.5;
-        Parameters.FixationCross    = 3;
+        Parameters.PreparePeriod    = 0;
+        Parameters.BlankPeriod      = 0;
+        Parameters.PictureDuration  = [0 0];
+        Parameters.LikertDuration   = 0;
+        Parameters.HoldPeriod       = 0;
+        Parameters.FixationCross    = 0;
+        
+%         Parameters.NrPics           = 6;
+%         
+%         Parameters.PreparePeriod    = 0.5;
+%         Parameters.BlankPeriod      = 0.5;
+%         Parameters.PictureDuration  = [0.5 1];
+%         Parameters.LikertDuration   = 3;
+%         Parameters.HoldPeriod       = 0.5;
+%         Parameters.FixationCross    = 3;
+        
     case 'RealisticDebug'
         Parameters.NrPics           = 12;
         
@@ -94,13 +104,13 @@ for evt = 1 : NrTrials
     dur =  Parameters.BlankPeriod + Parameters.PreparePeriod + pic_dur + Parameters.LikertDuration*2/2 + 2*Parameters.HoldPeriod;
     
     switch order(evt)
-        case 0
+        case 1
             c_NEU = c_NEU + 1;
             target = NEU{c_NEU};
-        case 1
+        case 2
             c_ISO = c_ISO + 1;
             target = ISO{c_ISO};
-        case 2
+        case 3
             c_ERO = c_ERO + 1;
             target = ERO{c_ERO};
     end

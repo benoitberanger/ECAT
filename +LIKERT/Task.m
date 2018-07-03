@@ -21,6 +21,8 @@ try
     Cross = LIKERT.Prepare.Cross;
     Scale = LIKERT.Prepare.Scale;
     [ Text_1 , Text_2 ] =  LIKERT.Prepare.Text;
+    [ Image , List ]= LIKERT.Prepare.Image;
+    Parameters.List = List;
     
     
     %% Eyelink
@@ -87,10 +89,10 @@ try
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 
-            case {'pic'} % --------------------------------
+            otherwise % --------------------------------
                 
                 % Echo in the command window
-                fprintf('#%3d/%.3d %s ', ...
+                fprintf('#%3d/%.3d %16s ', ...
                     EP.Data{evt,4}, Parameters.NrPics , EP.Data{evt,1} )
                 
                 
@@ -155,11 +157,16 @@ try
                 
                 %% Picture
                 
-                Screen('FillRect', S.PTB.wPtr, rand(1,3)*255, CenterRectOnPoint([0 0 500 500],S.PTB.CenterH,S.PTB.CenterV));
+                % Screen('FillRect', S.PTB.wPtr, rand(1,3)*255, CenterRectOnPoint([0 0 500 500],S.PTB.CenterH,S.PTB.CenterV));
+                Image.(EP.Data{evt,1}).Draw
                 
                 Screen('DrawingFinished',S.PTB.wPtr);
                 TIME = Screen('Flip',S.PTB.wPtr, when);
                 RR.AddEvent({['Picture__' EP.Data{evt,1}] TIME-StartTime [] []})
+                
+                if size(Image.(EP.Data{evt,1}).X,1) > 768
+                    0
+                end
                 
                 when = TIME + EP.Get( 'Picture', evt ) - S.PTB.slack;
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -404,10 +411,6 @@ try
                 fprintf('\n')
                 
                 
-            otherwise % ---------------------------------------------------
-                
-                error('unknown envent')
-                
         end % switch
         
         % This flag comes from Common.Interrupt, if ESCAPE is pressed
@@ -419,6 +422,10 @@ try
     
     
     %% End of stimulation
+    
+    for img = 1 : size(Parameters.List,1)
+         Screen('Close', Image.(Parameters.List{img,1}).texPtr );
+    end
     
     TaskData = Common.EndOfStimulation( TaskData, EP, ER, RR, KL, StartTime, StopTime );
     TaskData.Parameters = Parameters;
