@@ -282,6 +282,7 @@ switch get(get(handles.uipanel_EyelinkMode,'SelectedObject'),'Tag')
         name_num = randi(ln_str,[1 eyelink_max_finename]);
         name_str = str(name_num);
         
+        EyelinkFile = name_str;
         S.EyelinkFile = name_str;
         
     otherwise
