@@ -1,5 +1,6 @@
 function DrawCursor( self )
 
-Screen( 'FillRect', self.wPtr, self.cursorcolor, self.cursorCurrentRect )
+Screen('FillPoly' , self.wPtr, self.cursorcolor, self.cursorCoord);
+Screen('FramePoly', self.wPtr,        [ 0 0 0 ], self.cursorCoord);
 
 end % function

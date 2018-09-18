@@ -7,12 +7,13 @@ classdef Scale < baseObject
         
         % Parameters
         
-        width       = zeros(0,1)  % width of each arms, in pixels
+        width       = zeros(0,1)  % width of the triangle, in pixels
         scalecolor  = zeros(0,4) % [R G B a] from 0 to 255
         cursorcolor = zeros(0,4) % [R G B a] from 0 to 255
         center      = zeros(0,2) % [ CenterX CenterY ] of the cross, in pixels
         values      = cell(0)    % cellstr
         values_sz   = zeros(0,1) % tick text size
+        cursorsize  = zeros(0,1)
         
         % Internal variables
         
@@ -26,8 +27,7 @@ classdef Scale < baseObject
         
         cursor_pos_px     = zeros(0,1)
         cursor_pos_value  = zeros(0,1)
-        cursorBaseRect    = zeros(0,4) % [x1 y1 x2 y2]
-        cursorCurrentRect = zeros(0,4) % [x1 y1 x2 y2]
+        cursorCoord       = zeros(0,3) % [x1 y1 ; x2 y2 ; x3 y3]
         
         p2v = zeros(0,1) % polynome to polyval : pixel -> value
         v2p = zeros(0,1) % polynome to polyval : value -> pixel
@@ -42,7 +42,7 @@ classdef Scale < baseObject
         % -----------------------------------------------------------------
         %                           Constructor
         % -----------------------------------------------------------------
-        function self = Scale( width , values , scalecolor , cursorcolor , center, values_sz )
+        function self = Scale( width , values , scalecolor , cursorcolor , center, values_sz, cursorsize )
             % self = Scale( width=5 (pixels) ,  color=[128 128 128 255] from 0 to 255 , center = [ CenterX CenterY ] (pixels), values = cellstr )
             
             % ================ Check input argument =======================
@@ -76,12 +76,15 @@ classdef Scale < baseObject
                 self.center      = center;
                 self.values      = values;
                 self.values_sz   = values_sz;
+                self.cursorsize  = cursorsize;
                 
                 % ================== Callback =============================
                 
-                self.GenerateScaleRect  % real position
-                self.GenerateTickRect   % real position
-                self.GenerateCursorRect % main rect, but not at the right position
+                self.cursor_pos_px = NaN;
+                self.cursor_pos_value = NaN;
+                
+                self.GenerateScaleRect   % real position
+                self.GenerateTickRect    % real position
                 
             else
                 % Create empty instance

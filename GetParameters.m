@@ -104,6 +104,7 @@ Parameters.LIKERT.Scale.Voffcet     = 0.30;                              % Ypos 
 Parameters.LIKERT.Scale.Text_1      = 'J''aime';
 Parameters.LIKERT.Scale.Text_2      = 'Je desire';
 Parameters.LIKERT.Scale.TextSize    = 0.08;                              % Size = ScreenWide *ratio
+Parameters.LIKERT.Scale.CursorRatio = 0.01;                              % dim = ScreenWide *ratio
 
 %%%%%%%%%%%%%%
 %  Keybinds  %
