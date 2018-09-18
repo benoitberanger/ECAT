@@ -1,5 +1,7 @@
 function GenerateLabelRect( self )
 
+Screen('TextSize' , self.wPtr, self.values_sz);
+
 allBounds = zeros(length(self.values),4);
 
 for t = 1 : length(self.values)

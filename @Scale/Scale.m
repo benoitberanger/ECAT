@@ -7,11 +7,12 @@ classdef Scale < baseObject
         
         % Parameters
         
-        width       = zeros(0,1)   % width of each arms, in pixels
+        width       = zeros(0,1)  % width of each arms, in pixels
         scalecolor  = zeros(0,4) % [R G B a] from 0 to 255
         cursorcolor = zeros(0,4) % [R G B a] from 0 to 255
         center      = zeros(0,2) % [ CenterX CenterY ] of the cross, in pixels
         values      = cell(0)    % cellstr
+        values_sz   = zeros(0,1) % tick text size
         
         % Internal variables
         
@@ -41,7 +42,7 @@ classdef Scale < baseObject
         % -----------------------------------------------------------------
         %                           Constructor
         % -----------------------------------------------------------------
-        function self = Scale( width , values , scalecolor , cursorcolor , center )
+        function self = Scale( width , values , scalecolor , cursorcolor , center, values_sz )
             % self = Scale( width=5 (pixels) ,  color=[128 128 128 255] from 0 to 255 , center = [ CenterX CenterY ] (pixels), values = cellstr )
             
             % ================ Check input argument =======================
@@ -74,6 +75,7 @@ classdef Scale < baseObject
                 self.cursorcolor = cursorcolor;
                 self.center      = center;
                 self.values      = values;
+                self.values_sz   = values_sz;
                 
                 % ================== Callback =============================
                 

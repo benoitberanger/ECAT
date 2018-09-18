@@ -49,7 +49,7 @@ Parameters.Video.SubjectDistance = 0.120; % m
 Parameters.Video.ScreenWidthM    = 0.040; % m
 Parameters.Video.ScreenHeightM   = 0.030; % m
 
-Parameters.Video.ScreenBackgroundColor = [128 128 128]; % [R G B] ( from 0 to 255 )
+Parameters.Video.ScreenBackgroundColor = [80 80 80]; % [R G B] ( from 0 to 255 )
 
 %%%%%%%%%%%%
 %   Text   %
@@ -97,11 +97,13 @@ Parameters.LIKERT.FixationCross.Color          = [255 255 255]; % [R G B] ( from
 % Likert scale
 Parameters.LIKERT.Scale.ScreenRatio = 0.80;                              % ratio : dim = ScreenWide *ratio_screen
 Parameters.LIKERT.Scale.Values      = {'0' '1' '2' '3' '4' '5' '6' '7'};
+Parameters.LIKERT.Scale.ValuesSize  = 0.03;                              % Size = ScreenWide *ratio
 Parameters.LIKERT.Scale.ScaleColor  = [255 255 255];                     % [R G B] ( from 0 to 255 )
 Parameters.LIKERT.Scale.CursorColor = [255 0   0  ];                     % [R G B] ( from 0 to 255 )
-Parameters.LIKERT.Scale.Voffcet     = 0.40;                              % Ypos = (1-Voffcet)*ScreenHight
+Parameters.LIKERT.Scale.Voffcet     = 0.30;                              % Ypos = (1-Voffcet)*ScreenHight
 Parameters.LIKERT.Scale.Text_1      = 'J''aime';
 Parameters.LIKERT.Scale.Text_2      = 'Je desire';
+Parameters.LIKERT.Scale.TextSize    = 0.08;                              % Size = ScreenWide *ratio
 
 %%%%%%%%%%%%%%
 %  Keybinds  %

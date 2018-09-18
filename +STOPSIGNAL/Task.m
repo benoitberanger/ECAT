@@ -56,8 +56,8 @@ try
             case {'Go_Left','Go_Right','Stop_Left','Stop_Right'} % --------------------------------
                 
                 % Echo in the command window
-                fprintf('#%3d/%.3d %4s %5s %3gms \n', ...
-                    EP.Data{evt,4},size(EP.Data,1), EP.Data{evt,5}, EP.Data{evt,6}, EP.Data{evt,8} )
+                fprintf('#%3d/%.3d %4s %5s %4sms ', ...
+                    EP.Data{evt,4},size(EP.Data,1), EP.Data{evt,5}, EP.Data{evt,6}, num2str(EP.Data{evt,8}) )
                 
                 button_press = 0;
                 
@@ -224,14 +224,17 @@ try
                 
                 if ~button_press
                     BR.AddEvent({EP.Data{evt,1} EP.Get('Go/Stop',evt) EP.Get('Left/Right',evt) current_ssd -1 ''})
+                    fprintf('\t|\t %5s %4gms \n', '', -1)
                     if strcmp(EP.Get('Go/Stop',evt),'Stop')
                         STOPSIGNAL.AdjustSSD( EP, evt, 'up', Parameters.StepSize )
                     end
                 else
+                    fprintf('\t|\t %5s %4gms \n', side, BR.Get('ReactionTime',BR.EventCount))
                     if strcmp(EP.Get('Go/Stop',evt),'Stop')
                         STOPSIGNAL.AdjustSSD( EP, evt, 'down', Parameters.StepSize )
                     end
                 end
+                
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 secs = lastFlipOnset;

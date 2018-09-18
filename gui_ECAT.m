@@ -1190,10 +1190,12 @@ if ~exist(DataPath,'dir')
     mkdir(DataPath)
 end
 
+TimeStamp     = datestr(now, 'yyyy-mm-dd HH:MM'); %#ok<NASGU>
+TimeStampFile = datestr(now, 30                ); %#ok<NASGU>
 
 for file = 1 : length(PrePostAB_files)
     
-    save(PrePostAB_files{file}, sprintf('%s',alllists{file}) )
+    save(PrePostAB_files{file}, sprintf('%s',alllists{file}), 'TimeStamp', 'TimeStampFile' )
     fprintf('Saved : %s \n', PrePostAB_files{file})
     
 end

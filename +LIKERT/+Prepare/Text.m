@@ -2,11 +2,12 @@ function [ Text_1 , Text_2 ] = Text
 global S
 
 color = S.Parameters.LIKERT.Scale.ScaleColor;
+size  = round(S.PTB.wRect(3)*S.Parameters.LIKERT.Scale.TextSize);
 content = '';
 Xptb = S.PTB.CenterH;
 Yptb = S.PTB.wRect(4)*0.45;
 
-Text_1 = Text( color, content, Xptb, Yptb );
+Text_1 = Text( color, size, content, Xptb, Yptb );
 Text_1.LinkToWindowPtr( S.PTB.wPtr )
 
 Text_2 = Text_1.CopyObject;

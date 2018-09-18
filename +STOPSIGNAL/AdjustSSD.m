@@ -17,7 +17,7 @@ switch adjust
 end
 
 if ~isempty(next)
-    EP.Data{next+1,col_ssd} = EP.Data{evt,col_ssd} + sgn*stepsize; % milliseconds
+    EP.Data{next+1,col_ssd} = max( EP.Data{evt,col_ssd} + sgn*stepsize , 0 ) ; % milliseconds
 end
 
 end % function
